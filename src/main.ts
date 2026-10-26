@@ -62,8 +62,8 @@ const renderer = createRenderer()
 // is enough overdraw to crash a GPU process, so cap it.
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75))
 renderer.setSize(window.innerWidth, window.innerHeight)
-renderer.shadowMap.enabled = true
-renderer.shadowMap.type = THREE.PCFSoftShadowMap
+// Shadows are off: the three shadow casters cost about a quarter of the frame on a mid-range phone, and the room is static.
+renderer.shadowMap.enabled = false
 renderer.toneMapping = THREE.ACESFilmicToneMapping
 renderer.toneMappingExposure = 1.2
 renderer.xr.enabled = true
@@ -102,14 +102,6 @@ scene.add(ambient)
 // Main gallery spotlight - warm gallery lighting
 const sun = new THREE.DirectionalLight(0xfff5e6, 1.5)
 sun.position.set(8, 12, 6)
-sun.castShadow = true
-sun.shadow.mapSize.set(2048, 2048)
-sun.shadow.camera.far = 60
-sun.shadow.camera.left = -15
-sun.shadow.camera.right = 15
-sun.shadow.camera.top = 15
-sun.shadow.camera.bottom = -15
-sun.shadow.bias = -0.0005
 scene.add(sun)
 
 // Warm fill light from opposite side
@@ -122,16 +114,12 @@ scene.add(fill)
 const accent1 = new THREE.SpotLight(0xfff0e0, 0.8, 25, Math.PI / 6, 0.3, 1)
 accent1.position.set(-6, 6, -2)
 accent1.target.position.set(-4.8, 1.85, -6)
-accent1.castShadow = true
-accent1.shadow.mapSize.set(1024, 1024)
 scene.add(accent1)
 scene.add(accent1.target)
 
 const accent2 = new THREE.SpotLight(0xfff0e0, 0.8, 25, Math.PI / 6, 0.3, 1)
 accent2.position.set(6, 6, -2)
 accent2.target.position.set(4.8, 1.85, -6)
-accent2.castShadow = true
-accent2.shadow.mapSize.set(1024, 1024)
 scene.add(accent2)
 scene.add(accent2.target)
 

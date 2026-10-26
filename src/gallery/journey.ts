@@ -5,7 +5,6 @@ const WARM = 0xffe6c4
 
 export interface Beacon {
   anchor: THREE.Vector3
-  light: THREE.PointLight
   column: THREE.Mesh
   pool: THREE.Mesh
   setAccent: (hex: string) => void
@@ -162,20 +161,16 @@ function createBeacon(anchor: THREE.Vector3, accent: string): Beacon {
   pool.position.set(inner.x, 0.02, inner.z)
   group.add(pool)
 
-  const light = new THREE.PointLight(new THREE.Color(accent), 0.9, 7.5, 2)
-  light.position.set(inner.x, 2.1, inner.z)
-  group.add(light)
-
+  // No real light here: a point light per beacon cost about 5x the frame time on a mid-range phone.
+  // The additive column and floor pool carry the glow instead.
   return {
     anchor,
-    light,
     column,
     pool,
     setAccent(hex: string) {
       const c = new THREE.Color(hex)
       ;(columnMat as THREE.MeshBasicMaterial).color.copy(c)
       ;(poolMat as THREE.MeshBasicMaterial).color.copy(c)
-      light.color.copy(c)
     },
   }
 }
@@ -199,7 +194,7 @@ export function createJourneyField(scene: THREE.Scene, items: GalleryItem[], acc
     ribbons.push(ribbon)
 
     const beacon = createBeacon(anchor, accent)
-    group.add(beacon.column, beacon.pool, beacon.light)
+    group.add(beacon.column, beacon.pool)
     beacons.push(beacon)
   }
 
@@ -238,7 +233,6 @@ export function createJourneyField(scene: THREE.Scene, items: GalleryItem[], acc
 
     for (const beacon of beacons) {
       const breathe = 0.82 + Math.sin(pulse * 0.9 + beacon.anchor.x) * 0.18
-      beacon.light.intensity = 0.9 * breathe * revealT
       ;(beacon.column.material as THREE.MeshBasicMaterial).opacity = 0.07 * breathe * revealT
       ;(beacon.pool.material as THREE.MeshBasicMaterial).opacity = 0.13 * breathe * revealT
     }
