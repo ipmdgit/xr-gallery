@@ -36,7 +36,11 @@ export function createSettingsUI(opts: {
   gear.id = 'settings-gear'
   gear.className = 'ui'
   gear.title = 'Settings'
+  gear.setAttribute('aria-label', 'Settings')
+  gear.setAttribute('aria-expanded', 'false')
+  gear.setAttribute('aria-controls', 'settings-panel')
   gear.innerHTML = GEAR_SVG
+  gear.querySelector('svg')?.setAttribute('aria-hidden', 'true')
 
   const panel = document.createElement('div')
   panel.id = 'settings-panel'
@@ -80,7 +84,10 @@ export function createSettingsUI(opts: {
     localStorage.setItem(THEME_KEY, t.id)
   }
 
-  gear.addEventListener('click', () => panel.classList.toggle('hidden'))
+  gear.addEventListener('click', () => {
+    const hidden = panel.classList.toggle('hidden')
+    gear.setAttribute('aria-expanded', String(!hidden))
+  })
   autoInput.addEventListener('change', () => {
     localStorage.setItem(AUTO_KEY, autoInput.checked ? '1' : '0')
     opts.onAutoRotate(autoInput.checked)

@@ -44,6 +44,10 @@ export function createTools(opts: {
   feelBtn.className = 'tool feel'
   feelBtn.textContent = 'MOOD'
   feelBtn.title = 'Tell us the mood — EchoBloom senses it and shifts the gallery to match'
+  feelBtn.setAttribute('aria-haspopup', 'dialog')
+
+  listBtn.setAttribute('aria-expanded', 'false')
+  listBtn.setAttribute('aria-controls', 'list-panel')
 
   const listPanel = document.createElement('div')
   listPanel.id = 'list-panel'
@@ -65,7 +69,10 @@ export function createTools(opts: {
     if (tourBtn.classList.contains('active')) opts.onStopTour()
     else opts.onTour()
   })
-  listBtn.addEventListener('click', () => listPanel.classList.toggle('hidden'))
+  listBtn.addEventListener('click', () => {
+    const hidden = listPanel.classList.toggle('hidden')
+    listBtn.setAttribute('aria-expanded', String(!hidden))
+  })
   feelBtn.addEventListener('click', opts.onFeel)
 
   row.append(photoBtn, tourBtn, listBtn, feelBtn)
@@ -83,6 +90,7 @@ export function createTools(opts: {
       btn.className = 'list-item'
       const dot = document.createElement('span')
       dot.className = 'list-dot'
+      dot.setAttribute('aria-hidden', 'true')
       if (item.type === 'artwork') {
         dot.style.background = `linear-gradient(135deg, hsl(${item.colors[0]} 90% 55%), hsl(${item.colors[1]} 90% 65%))`
       } else {
@@ -117,6 +125,7 @@ export function createTools(opts: {
     },
     setPhotoDisabled(disabled) {
       photoBtn.classList.toggle('disabled', disabled)
+      photoBtn.setAttribute('aria-disabled', String(disabled))
       photoBtn.title = disabled
         ? 'Photo mode is not available in VR'
         : 'Save a screenshot of the gallery'

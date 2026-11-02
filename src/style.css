@@ -5,6 +5,14 @@ body {
   background: #0a0c14;
 }
 
+/* Keyboard focus ring: dark inner ring + white outer ring, visible on the dark UI and over the bright scene. Not shown for mouse or touch. */
+button:focus-visible,
+input:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 3px;
+  box-shadow: 0 0 0 3px #0a0c14;
+}
+
 .fatal {
   position: fixed;
   inset: 0;

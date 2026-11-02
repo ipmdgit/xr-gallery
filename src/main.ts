@@ -460,6 +460,7 @@ footer.textContent = 'An EchoBloom Initiative by IPMD — art that heals, inspir
 document.body.appendChild(footer)
 
 const moodModal = createMoodModal({
+  fallbackFocus: () => tools?.feelBtn ?? null,
   onApply(mood) {
     moodAccent = mood.accent
     settings.setThemeId(mood.themeId)
@@ -539,6 +540,8 @@ if (localStorage.getItem(VISITED_KEY)) {
     () => sound.start(),
     { once: true },
   )
+  // Keyboard users start on the one control that matters here, not on the gear behind the landing.
+  landingEnter.focus({ preventScroll: true })
 }
 
 document.title = 'EchoBloom Gallery — IPMD'
