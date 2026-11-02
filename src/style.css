@@ -590,6 +590,14 @@ button.vr {
   }
 }
 
+/* On a phone the panel would cover the toolbar, including the LIST button that closes it. */
+@media (max-width: 640px) {
+  #list-panel {
+    top: 76px;
+    max-height: calc(100dvh - 96px);
+  }
+}
+
 body.photo-mode .ui {
   visibility: hidden;
 }

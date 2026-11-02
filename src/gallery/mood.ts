@@ -119,12 +119,21 @@ export function createMoodModal(opts: {
 
   // Keep Tab inside the dialog while it is open, including when focus has strayed outside it.
   function onKeydown(e: KeyboardEvent) {
-    if (e.key !== 'Tab') return
     const items = focusables()
     if (items.length === 0) return
+    const active = document.activeElement
+    // Left and Right step through the four moods, wrapping at the ends.
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+      const at = items.indexOf(active as HTMLElement)
+      if (at === -1) return
+      e.preventDefault()
+      const step = e.key === 'ArrowRight' ? 1 : -1
+      items[(at + step + items.length) % items.length].focus({ preventScroll: true })
+      return
+    }
+    if (e.key !== 'Tab') return
     const first = items[0]
     const last = items[items.length - 1]
-    const active = document.activeElement
     if (!overlay.contains(active)) {
       e.preventDefault()
       first.focus()

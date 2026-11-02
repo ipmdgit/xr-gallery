@@ -577,6 +577,24 @@ function createVRButton(): HTMLButtonElement | null {
 const vrButton = createVRButton()
 if (vrButton) document.body.appendChild(vrButton)
 
+// Left and Right step through the main controls in screen order, wrapping at the ends.
+window.addEventListener('keydown', (e) => {
+  if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return
+  const bar = [
+    document.getElementById('settings-gear'),
+    tools.photoBtn,
+    tools.tourBtn,
+    tools.listBtn,
+    tools.feelBtn,
+    vrButton,
+  ].filter((el): el is HTMLElement => el !== null)
+  const at = bar.indexOf(document.activeElement as HTMLElement)
+  if (at === -1) return
+  e.preventDefault()
+  const step = e.key === 'ArrowRight' ? 1 : -1
+  bar[(at + step + bar.length) % bar.length].focus({ preventScroll: true })
+})
+
 let tools: ToolUI
 
 function viewFor(group: THREE.Group, item: GalleryItem): { pos: THREE.Vector3; look: THREE.Vector3 } {
