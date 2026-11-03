@@ -44,6 +44,10 @@ export function createTools(opts: {
   feelBtn.className = 'tool feel'
   feelBtn.textContent = 'MOOD'
   feelBtn.title = 'Tell us the mood — EchoBloom senses it and shifts the gallery to match'
+  feelBtn.setAttribute('aria-haspopup', 'dialog')
+
+  listBtn.setAttribute('aria-expanded', 'false')
+  listBtn.setAttribute('aria-controls', 'list-panel')
 
   const listPanel = document.createElement('div')
   listPanel.id = 'list-panel'
@@ -65,8 +69,32 @@ export function createTools(opts: {
     if (tourBtn.classList.contains('active')) opts.onStopTour()
     else opts.onTour()
   })
-  listBtn.addEventListener('click', () => listPanel.classList.toggle('hidden'))
+  function closeList() {
+    listPanel.classList.add('hidden')
+    listBtn.setAttribute('aria-expanded', 'false')
+  }
+  listBtn.addEventListener('click', () => {
+    const hidden = listPanel.classList.toggle('hidden')
+    listBtn.setAttribute('aria-expanded', String(!hidden))
+  })
+  // Escape closes the panel and returns focus to LIST.
+  listPanel.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return
+    closeList()
+    listBtn.focus({ preventScroll: true })
+  })
   feelBtn.addEventListener('click', opts.onFeel)
+
+  // Up and Down step through the pieces, wrapping at the ends.
+  list.addEventListener('keydown', (e) => {
+    if (e.key !== 'ArrowUp' && e.key !== 'ArrowDown') return
+    const items = Array.from(list.querySelectorAll<HTMLButtonElement>('.list-item'))
+    const at = items.indexOf(document.activeElement as HTMLButtonElement)
+    if (at === -1) return
+    e.preventDefault()
+    const step = e.key === 'ArrowDown' ? 1 : -1
+    items[(at + step + items.length) % items.length].focus({ preventScroll: true })
+  })
 
   row.append(photoBtn, tourBtn, listBtn, feelBtn)
   document.body.append(row, listPanel)
@@ -83,6 +111,7 @@ export function createTools(opts: {
       btn.className = 'list-item'
       const dot = document.createElement('span')
       dot.className = 'list-dot'
+      dot.setAttribute('aria-hidden', 'true')
       if (item.type === 'artwork') {
         dot.style.background = `linear-gradient(135deg, hsl(${item.colors[0]} 90% 55%), hsl(${item.colors[1]} 90% 65%))`
       } else {
@@ -94,7 +123,11 @@ export function createTools(opts: {
       meta.className = 'list-artist'
       meta.textContent = item.artist
       btn.append(dot, text, meta)
-      btn.addEventListener('click', () => onPick(item))
+      btn.addEventListener('click', () => {
+        onPick(item)
+        // On a phone the open panel hides the piece you just picked.
+        if (window.matchMedia('(max-width: 640px)').matches) closeList()
+      })
       rows.set(item.id, btn)
       list.appendChild(btn)
     }
@@ -117,6 +150,7 @@ export function createTools(opts: {
     },
     setPhotoDisabled(disabled) {
       photoBtn.classList.toggle('disabled', disabled)
+      photoBtn.setAttribute('aria-disabled', String(disabled))
       photoBtn.title = disabled
         ? 'Photo mode is not available in VR'
         : 'Save a screenshot of the gallery'

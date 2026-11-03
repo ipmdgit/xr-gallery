@@ -56,19 +56,27 @@ export interface MoodModal {
 
 export function createMoodModal(opts: {
   onApply: (mood: Mood) => void
+  /** Where focus goes on close when the control that opened the dialog is gone. */
+  fallbackFocus?: () => HTMLElement | null
 }): MoodModal {
   const overlay = document.createElement('div')
   overlay.id = 'mood-overlay'
   overlay.className = 'ui hidden'
+  overlay.setAttribute('role', 'dialog')
+  overlay.setAttribute('aria-modal', 'true')
+  overlay.setAttribute('aria-labelledby', 'mood-title')
+  overlay.setAttribute('aria-describedby', 'mood-sub')
 
   const card = document.createElement('div')
   card.id = 'mood-card'
 
   const title = document.createElement('div')
+  title.id = 'mood-title'
   title.className = 'mood-title'
   title.textContent = 'How are you feeling?'
 
   const sub = document.createElement('div')
+  sub.id = 'mood-sub'
   sub.className = 'mood-sub'
   sub.textContent =
     'EchoBloom senses the mood — pick the one that fits, and the gallery will meet you there.'
@@ -82,6 +90,7 @@ export function createMoodModal(opts: {
     btn.dataset.mood = mood.id
     const dot = document.createElement('span')
     dot.className = 'mood-dot'
+    dot.setAttribute('aria-hidden', 'true')
     dot.style.background = `radial-gradient(circle at 34% 30%, #ffffffcc 0%, ${mood.accent} 46%, ${mood.accent}22 100%)`
     dot.style.boxShadow = `0 0 22px ${mood.accent}66`
     const label = document.createElement('span')
@@ -101,11 +110,59 @@ export function createMoodModal(opts: {
     if (e.target === overlay) hide()
   })
 
+  let opener: HTMLElement | null = null
+  let hideTimer = 0
+
+  function focusables(): HTMLElement[] {
+    return Array.from(overlay.querySelectorAll<HTMLElement>('button:not([disabled])'))
+  }
+
+  // Keep Tab inside the dialog while it is open, including when focus has strayed outside it.
+  function onKeydown(e: KeyboardEvent) {
+    const items = focusables()
+    if (items.length === 0) return
+    const active = document.activeElement
+    // Left and Right step through the four moods, wrapping at the ends.
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+      const at = items.indexOf(active as HTMLElement)
+      if (at === -1) return
+      e.preventDefault()
+      const step = e.key === 'ArrowRight' ? 1 : -1
+      items[(at + step + items.length) % items.length].focus({ preventScroll: true })
+      return
+    }
+    if (e.key !== 'Tab') return
+    const first = items[0]
+    const last = items[items.length - 1]
+    if (!overlay.contains(active)) {
+      e.preventDefault()
+      first.focus()
+    } else if (e.shiftKey && active === first) {
+      e.preventDefault()
+      last.focus()
+    } else if (!e.shiftKey && active === last) {
+      e.preventDefault()
+      first.focus()
+    }
+  }
+
+  function isActive() {
+    return !overlay.classList.contains('hidden') && !overlay.classList.contains('fading')
+  }
+
   function hide() {
+    if (!isActive()) return
+    document.removeEventListener('keydown', onKeydown, true)
     overlay.classList.add('fading')
-    setTimeout(() => {
-      overlay.classList.remove('fading')
+    // The fade lasts 420 ms; keep its buttons out of the tab order meanwhile.
+    overlay.inert = true
+    const target = opener && opener.isConnected ? opener : (opts.fallbackFocus?.() ?? null)
+    opener = null
+    target?.focus({ preventScroll: true })
+    hideTimer = window.setTimeout(() => {
+      overlay.classList.remove('fading', 'showing')
       overlay.classList.add('hidden')
+      overlay.inert = false
     }, 420)
   }
 
@@ -113,10 +170,17 @@ export function createMoodModal(opts: {
 
   return {
     open() {
-      overlay.classList.remove('hidden')
+      if (isActive()) return
+      clearTimeout(hideTimer)
+      overlay.inert = false
+      overlay.classList.remove('hidden', 'fading')
+      const active = document.activeElement
+      opener = active instanceof HTMLElement && active !== document.body ? active : null
+      document.addEventListener('keydown', onKeydown, true)
       requestAnimationFrame(() => overlay.classList.add('showing'))
+      focusables()[0]?.focus({ preventScroll: true })
     },
     close: hide,
-    isOpen: () => !overlay.classList.contains('hidden'),
+    isOpen: isActive,
   }
 }
