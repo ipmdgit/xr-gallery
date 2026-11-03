@@ -361,18 +361,52 @@ renderer.domElement.addEventListener('pointermove', (e) => {
   setHovered(hit ? artworkGroupOf(hit.object) : null)
 })
 
+// A tap or click selects; a drag looks around. Selecting on pointerdown meant every drag that
+// started on a piece opened its card and every drag that started on bare wall closed it, and
+// the second finger of a pinch closed it too.
+const TAP_SLOP_PX = 8
+let tapStart: { x: number; y: number; id: number } | null = null
+
 renderer.domElement.addEventListener('pointerdown', (e) => {
   if ((renderer.xr as unknown as { isPresenting: boolean }).isPresenting) return
+  // Grabbing the view takes over from a glide to a piece; the tour keeps its own pacing.
+  if (focus.active && !tour.active) {
+    focus.active = false
+    if (autoRotateSetting) controls.autoRotate = true
+  }
+  tapStart = e.isPrimary && e.button === 0 ? { x: e.clientX, y: e.clientY, id: e.pointerId } : null
+})
+
+renderer.domElement.addEventListener('pointercancel', () => {
+  tapStart = null
+})
+
+renderer.domElement.addEventListener('pointerup', (e) => {
+  if ((renderer.xr as unknown as { isPresenting: boolean }).isPresenting) return
+  const start = tapStart
+  tapStart = null
+  if (!start || e.pointerId !== start.id) return
+  if (Math.hypot(e.clientX - start.x, e.clientY - start.y) > TAP_SLOP_PX) return
   pointer.x = (e.clientX / window.innerWidth) * 2 - 1
   pointer.y = -(e.clientY / window.innerHeight) * 2 + 1
   raycaster.setFromCamera(pointer, camera)
   const hit = raycaster
     .intersectObjects(scene.children, true)
     .find((h) => h.object.userData.artwork)
-  if (hit) {
-    placeCard(hit.object.userData.config as GalleryItem, hit)
-  } else {
+  if (!hit) {
     infoCard.hide()
+    return
+  }
+  const item = hit.object.userData.config as GalleryItem
+  // Same move as picking the piece from LIST: fly in so the card is readable. During a tour the
+  // tour owns the camera, so only the card is placed.
+  const group = tour.active ? undefined : artworkGroups.get(item.id)
+  if (group) {
+    startFocus(group, item)
+    infoCard.show(item, cardSpotFor(group, item))
+    tools.setActiveItem(item.id)
+  } else {
+    placeCard(item, hit)
   }
 })
 
@@ -450,7 +484,9 @@ document.body.appendChild(moodLine)
 const hint = document.createElement('div')
 hint.id = 'hint'
 hint.className = 'ui'
-hint.textContent = 'Drag to look · scroll to zoom · click a piece · hover for glow'
+hint.textContent = window.matchMedia('(pointer: coarse)').matches
+  ? 'Drag to look · pinch to zoom · tap a piece'
+  : 'Drag to look · scroll to zoom · click a piece · hover for glow'
 document.body.appendChild(hint)
 
 const footer = document.createElement('div')
