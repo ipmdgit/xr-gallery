@@ -64,7 +64,11 @@ export function createTools(opts: {
 
   const rows = new Map<string, HTMLButtonElement>()
 
-  photoBtn.addEventListener('click', opts.onPhoto)
+  photoBtn.addEventListener('click', () => {
+    // aria-disabled keeps the button focusable, so the click itself has to be blocked.
+    if (photoBtn.getAttribute('aria-disabled') === 'true') return
+    opts.onPhoto()
+  })
   tourBtn.addEventListener('click', () => {
     if (tourBtn.classList.contains('active')) opts.onStopTour()
     else opts.onTour()
@@ -76,13 +80,17 @@ export function createTools(opts: {
   listBtn.addEventListener('click', () => {
     const hidden = listPanel.classList.toggle('hidden')
     listBtn.setAttribute('aria-expanded', String(!hidden))
+    // Opening the panel moves focus to the first piece.
+    if (!hidden) list.querySelector<HTMLButtonElement>('.list-item')?.focus({ preventScroll: true })
   })
-  // Escape closes the panel and returns focus to LIST.
-  listPanel.addEventListener('keydown', (e) => {
-    if (e.key !== 'Escape') return
+  // Escape closes the panel and returns focus to LIST, from the panel or from the LIST button.
+  function onListEscape(e: KeyboardEvent) {
+    if (e.key !== 'Escape' || listPanel.classList.contains('hidden')) return
     closeList()
     listBtn.focus({ preventScroll: true })
-  })
+  }
+  listPanel.addEventListener('keydown', onListEscape)
+  listBtn.addEventListener('keydown', onListEscape)
   feelBtn.addEventListener('click', opts.onFeel)
 
   // Up and Down step through the pieces, wrapping at the ends.

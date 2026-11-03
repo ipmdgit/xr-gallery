@@ -580,6 +580,9 @@ if (vrButton) document.body.appendChild(vrButton)
 // Left and Right step through the main controls in screen order, wrapping at the ends.
 window.addEventListener('keydown', (e) => {
   if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return
+  // Skip controls that are hidden (photo mode hides every .ui element); they cannot take focus.
+  const shown = (el: HTMLElement) =>
+    getComputedStyle(el).visibility !== 'hidden' && el.getClientRects().length > 0
   const bar = [
     document.getElementById('settings-gear'),
     tools.photoBtn,
@@ -587,7 +590,7 @@ window.addEventListener('keydown', (e) => {
     tools.listBtn,
     tools.feelBtn,
     vrButton,
-  ].filter((el): el is HTMLElement => el !== null)
+  ].filter((el): el is HTMLElement => el !== null && shown(el))
   const at = bar.indexOf(document.activeElement as HTMLElement)
   if (at === -1) return
   e.preventDefault()
@@ -827,7 +830,6 @@ window.addEventListener('resize', () => {
 
 window.addEventListener('keydown', (e) => {
   if (e.key === 'Escape' && tour.active) endTour()
-  if (e.key === 'Escape' && moodModal.isOpen()) moodModal.close()
 })
 
 // Dev-only performance readout: open the dev server with ?perf. The import.meta.env.DEV
