@@ -26,4 +26,6 @@ controller lasers all adopt that colour.
 - **TOUR** — cinematic flythrough of every piece.
 - **LIST** — browse all pieces.
 - **PHOTO** — save a screenshot of the current view.
-- **VR** — controllers get a laser aim; pull the trigger on a piece for its info card.
+- **VR** — controllers get a laser aim; pull the trigger on a piece for its info card. The ENTER VR
+  button only appears on a device that can start an immersive session, so a desktop browser without
+  a headset never shows a control that cannot work. VR is progressive enhancement on top of the web app.
