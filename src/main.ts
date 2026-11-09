@@ -9,7 +9,7 @@ import {
   GALLERY,
   type GalleryItem,
 } from './gallery/artwork.ts'
-import { createInfoCard } from './gallery/infocard.ts'
+import { createInfoCard, CARD_WIDTH } from './gallery/infocard.ts'
 import { loadTheme, createSettingsUI } from './gallery/settings.ts'
 import { updateGlows } from './gallery/glow.ts'
 import { createTools, type ToolUI } from './gallery/tools.ts'
@@ -361,18 +361,52 @@ renderer.domElement.addEventListener('pointermove', (e) => {
   setHovered(hit ? artworkGroupOf(hit.object) : null)
 })
 
+// A tap or click selects; a drag looks around. Selecting on pointerdown meant every drag that
+// started on a piece opened its card and every drag that started on bare wall closed it, and
+// the second finger of a pinch closed it too.
+const TAP_SLOP_PX = 8
+let tapStart: { x: number; y: number; id: number } | null = null
+
 renderer.domElement.addEventListener('pointerdown', (e) => {
   if ((renderer.xr as unknown as { isPresenting: boolean }).isPresenting) return
+  // Grabbing the view takes over from a glide to a piece; the tour keeps its own pacing.
+  if (focus.active && !tour.active) {
+    focus.active = false
+    if (autoRotateSetting) controls.autoRotate = true
+  }
+  tapStart = e.isPrimary && e.button === 0 ? { x: e.clientX, y: e.clientY, id: e.pointerId } : null
+})
+
+renderer.domElement.addEventListener('pointercancel', () => {
+  tapStart = null
+})
+
+renderer.domElement.addEventListener('pointerup', (e) => {
+  if ((renderer.xr as unknown as { isPresenting: boolean }).isPresenting) return
+  const start = tapStart
+  tapStart = null
+  if (!start || e.pointerId !== start.id) return
+  if (Math.hypot(e.clientX - start.x, e.clientY - start.y) > TAP_SLOP_PX) return
   pointer.x = (e.clientX / window.innerWidth) * 2 - 1
   pointer.y = -(e.clientY / window.innerHeight) * 2 + 1
   raycaster.setFromCamera(pointer, camera)
   const hit = raycaster
     .intersectObjects(scene.children, true)
     .find((h) => h.object.userData.artwork)
-  if (hit) {
-    placeCard(hit.object.userData.config as GalleryItem, hit)
-  } else {
+  if (!hit) {
     infoCard.hide()
+    return
+  }
+  const item = hit.object.userData.config as GalleryItem
+  // Same move as picking the piece from LIST: fly in so the card is readable. During a tour the
+  // tour owns the camera, so only the card is placed.
+  const group = tour.active ? undefined : artworkGroups.get(item.id)
+  if (group) {
+    startFocus(group, item)
+    infoCard.show(item, cardSpotFor(group, item))
+    tools.setActiveItem(item.id)
+  } else {
+    placeCard(item, hit)
   }
 })
 
@@ -450,7 +484,9 @@ document.body.appendChild(moodLine)
 const hint = document.createElement('div')
 hint.id = 'hint'
 hint.className = 'ui'
-hint.textContent = 'Drag to look · scroll to zoom · click a piece · hover for glow'
+hint.textContent = window.matchMedia('(pointer: coarse)').matches
+  ? 'Drag to look · pinch to zoom · tap a piece'
+  : 'Drag to look · scroll to zoom · click a piece · hover for glow'
 document.body.appendChild(hint)
 
 const footer = document.createElement('div')
@@ -580,6 +616,9 @@ if (vrButton) document.body.appendChild(vrButton)
 // Left and Right step through the main controls in screen order, wrapping at the ends.
 window.addEventListener('keydown', (e) => {
   if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return
+  // Skip controls that are hidden (photo mode hides every .ui element); they cannot take focus.
+  const shown = (el: HTMLElement) =>
+    getComputedStyle(el).visibility !== 'hidden' && el.getClientRects().length > 0
   const bar = [
     document.getElementById('settings-gear'),
     tools.photoBtn,
@@ -587,7 +626,7 @@ window.addEventListener('keydown', (e) => {
     tools.listBtn,
     tools.feelBtn,
     vrButton,
-  ].filter((el): el is HTMLElement => el !== null)
+  ].filter((el): el is HTMLElement => el !== null && shown(el))
   const at = bar.indexOf(document.activeElement as HTMLElement)
   if (at === -1) return
   e.preventDefault()
@@ -599,7 +638,10 @@ let tools: ToolUI
 
 function viewFor(group: THREE.Group, item: GalleryItem): { pos: THREE.Vector3; look: THREE.Vector3 } {
   const n = wallNormal(item)
-  const pos = group.position.clone().addScaledVector(n, 3.2).setY(group.position.y + 0.35)
+  // On a narrow screen 3.2 m is too close: the card, 0.5 m off the wall, runs off both sides.
+  const halfView = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.aspect
+  const distance = Math.max(3.2, 0.5 + CARD_WIDTH / 2 / (halfView * 0.92))
+  const pos = group.position.clone().addScaledVector(n, distance).setY(group.position.y + 0.35)
   const look = group.position.clone().setY(group.position.y + 0.6)
   return { pos, look }
 }
@@ -827,7 +869,6 @@ window.addEventListener('resize', () => {
 
 window.addEventListener('keydown', (e) => {
   if (e.key === 'Escape' && tour.active) endTour()
-  if (e.key === 'Escape' && moodModal.isOpen()) moodModal.close()
 })
 
 // Dev-only performance readout: open the dev server with ?perf. The import.meta.env.DEV
@@ -891,6 +932,8 @@ renderer.setAnimationLoop(() => {
   if (focus.active) {
     camera.position.lerp(focus.pos, 0.06)
     controls.target.lerp(focus.look, 0.06)
+    // controls.update() is skipped during a glide, so turn here or the view snaps when it ends.
+    if (!(renderer.xr as unknown as { isPresenting: boolean }).isPresenting) camera.lookAt(controls.target)
     if (camera.position.distanceTo(focus.pos) < 0.1) {
       focus.active = false
       if (!tour.active && autoRotateSetting) controls.autoRotate = true

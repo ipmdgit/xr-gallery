@@ -119,6 +119,11 @@ export function createMoodModal(opts: {
 
   // Keep Tab inside the dialog while it is open, including when focus has strayed outside it.
   function onKeydown(e: KeyboardEvent) {
+    // Escape belongs to the dialog, so it closes however the dialog is reused.
+    if (e.key === 'Escape') {
+      hide()
+      return
+    }
     const items = focusables()
     if (items.length === 0) return
     const active = document.activeElement
