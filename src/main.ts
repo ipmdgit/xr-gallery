@@ -932,6 +932,8 @@ renderer.setAnimationLoop(() => {
   if (focus.active) {
     camera.position.lerp(focus.pos, 0.06)
     controls.target.lerp(focus.look, 0.06)
+    // controls.update() is skipped during a glide, so turn here or the view snaps when it ends.
+    if (!(renderer.xr as unknown as { isPresenting: boolean }).isPresenting) camera.lookAt(controls.target)
     if (camera.position.distanceTo(focus.pos) < 0.1) {
       focus.active = false
       if (!tour.active && autoRotateSetting) controls.autoRotate = true
