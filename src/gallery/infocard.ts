@@ -4,6 +4,9 @@ import type { GalleryItem } from './artwork.ts'
 const W = 2048
 const H = 1024
 
+/** Width of the card in the room, in metres. */
+export const CARD_WIDTH = 2.9
+
 function wrapText(ctx: CanvasRenderingContext2D, text: string, maxWidth: number): string[] {
   const words = text.split(' ')
   const lines: string[] = []
@@ -81,7 +84,7 @@ export function createInfoCard(): {
     depthTest: true,
     depthWrite: false,
   })
-  const mesh = new THREE.Mesh(new THREE.PlaneGeometry(2.9, 1.45), material)
+  const mesh = new THREE.Mesh(new THREE.PlaneGeometry(CARD_WIDTH, CARD_WIDTH / 2), material)
 
   let current: THREE.CanvasTexture | null = null
   let target = new THREE.Vector3()
