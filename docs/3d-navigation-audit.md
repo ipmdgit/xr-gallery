@@ -34,6 +34,7 @@ Written for Week 5. It lists what a mouse or touch visitor can do in the 3D view
 - Select on release. A tap or click (finger or button released within 8 px of where it went down, primary pointer only, left button only) selects. A drag looks around and never changes the card. A second finger or a right-click never selects.
 - Selecting a piece flies the camera in front of it and shows the card, the same move LIST already makes. During a tour the tour keeps the camera and only the card is placed.
 - Pressing on the view during a glide stops the glide, so the visitor takes over at once and nothing is replayed later.
+- The camera now turns during a fly-in. Before, it moved without turning and snapped to the piece on the last frame, for LIST and TOUR as well.
 - The fly-in distance now depends on the screen. On a 390x844 phone the old 3.2 m put the 2.9 m wide card off both sides of the screen, for LIST and TOUR as well. On a narrow screen the camera now stops far enough back for the card to fit (about 4.9 m on that phone). Desktop stays at 3.2 m.
 - On touch devices the hint reads "Drag to look · pinch to zoom · tap a piece".
 - VR is untouched: the controller select handler and the session code are unchanged, and the new handlers return early while a headset session is running.
@@ -50,6 +51,7 @@ Written for Week 5. It lists what a mouse or touch visitor can do in the 3D view
 | Right-click a piece | n/a | does not select |
 | Click with 3 px of jitter | n/a | selects |
 | Tour running, click a piece | n/a | tour keeps running |
+| Biggest one-frame move of the piece on screen during a fly-in (1280x720) | 40 px back wall, 16,623 px side wall (piece behind the camera until the snap), both on the last frame | 3 px back wall, 15 px side wall |
 | Fly in on a 390x844 phone | card cut off on both sides | whole card on screen |
 | Move to the next piece, mouse | n/a | click a neighbour; camera moves to it |
 | Move to the next piece, phone | LIST | LIST; no other piece centre is on screen after flying in |
