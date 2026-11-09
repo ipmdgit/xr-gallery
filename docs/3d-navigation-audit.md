@@ -29,11 +29,12 @@ Written for Week 5. It lists what a mouse or touch visitor can do in the 3D view
 4. **Tap targets are small.** 48x56 px on a phone at the home view is at the edge of a comfortable touch target. Not changed.
 5. **The hint line describes a mouse.** "scroll to zoom" and "hover for glow" do not apply on a phone.
 
-## The fix (3 files, 62 lines added, 11 removed)
+## The fix (4 source files, 71 lines added, 14 removed, including the review follow-ups)
 
 - Select on release. A tap or click (finger or button released within 8 px of where it went down, primary pointer only, left button only) selects. A drag looks around and never changes the card. A second finger or a right-click never selects.
 - Selecting a piece flies the camera in front of it and shows the card, the same move LIST already makes. During a tour the tour keeps the camera and only the card is placed.
 - Pressing on the view during a glide stops the glide, so the visitor takes over at once and nothing is replayed later.
+- The fly-in distance now depends on the screen. On a 390x844 phone the old 3.2 m put the 2.9 m wide card off both sides of the screen, for LIST and TOUR as well. On a narrow screen the camera now stops far enough back for the card to fit (about 4.9 m on that phone). Desktop stays at 3.2 m.
 - On touch devices the hint reads "Drag to look · pinch to zoom · tap a piece".
 - VR is untouched: the controller select handler and the session code are unchanged, and the new handlers return early while a headset session is running.
 
@@ -49,17 +50,22 @@ Written for Week 5. It lists what a mouse or touch visitor can do in the 3D view
 | Right-click a piece | n/a | does not select |
 | Click with 3 px of jitter | n/a | selects |
 | Tour running, click a piece | n/a | tour keeps running |
+| Fly in on a 390x844 phone | card cut off on both sides | whole card on screen |
+| Move to the next piece, mouse | n/a | click a neighbour; camera moves to it |
+| Move to the next piece, phone | LIST | LIST; no other piece centre is on screen after flying in |
 
 ## Noticed and left alone
 
 - Zoom out is allowed to 30 m, which puts the camera outside the open-fronted room and below head height. This is a design setting (`maxDistance`), not a bug. A smaller limit is a one-line change if wanted.
 - No pan limit is set in the code, so a visitor may be able to pan the room off screen. I did not test how far it goes.
 - Escape does not dismiss the card.
+- The card covers the top of its own piece. It sits 0.5 m in front of the wall, above the centre of the piece. This is how v1 places it.
+- On a portrait phone you normally move between pieces with LIST, because the neighbours are off screen after flying in. A pinch to zoom out should also bring them into view, but I did not script that.
 - On a 390 px phone the hint line wraps to three lines over the mood line, and the title sits behind the toolbar.
 - There is no "back to overview" control. Adding one would be a new control, which this task rules out.
 
 ## Not tested
 
-- A real phone or tablet, a trackpad, a stylus.
+- A tablet, a trackpad, a stylus. My scripted touch runs were emulated. The phone check by hand was done before the narrow-screen card fix, so it needs repeating.
 - Firefox and Safari.
 - A headset. The VR code is unchanged, but I have not entered VR with this build.
