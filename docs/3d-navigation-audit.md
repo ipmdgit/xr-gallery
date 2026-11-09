@@ -29,7 +29,7 @@ Written for Week 5. It lists what a mouse or touch visitor can do in the 3D view
 4. **Tap targets are small.** 48x56 px on a phone at the home view is at the edge of a comfortable touch target. Not changed.
 5. **The hint line describes a mouse.** "scroll to zoom" and "hover for glow" do not apply on a phone.
 
-## The fix (4 source files, 71 lines added, 14 removed, including the review follow-ups)
+## The fix (4 source files, 73 lines added, 14 removed, including the review follow-ups)
 
 - Select on release. A tap or click (finger or button released within 8 px of where it went down, primary pointer only, left button only) selects. A drag looks around and never changes the card. A second finger or a right-click never selects.
 - Selecting a piece flies the camera in front of it and shows the card, the same move LIST already makes. During a tour the tour keeps the camera and only the card is placed.
@@ -54,7 +54,8 @@ Written for Week 5. It lists what a mouse or touch visitor can do in the 3D view
 | Biggest one-frame move of the piece on screen during a fly-in (1280x720) | 40 px back wall, 16,623 px side wall (piece behind the camera until the snap), both on the last frame | 3 px back wall, 15 px side wall |
 | Fly in on a 390x844 phone | card cut off on both sides | whole card on screen |
 | Move to the next piece, mouse | n/a | click a neighbour; camera moves to it |
-| Move to the next piece, phone | LIST | LIST; no other piece centre is on screen after flying in |
+| Move to the next piece, phone | LIST | LIST, or pinch out and tap a neighbour; no other piece centre is on screen after flying in |
+| Tap or click empty space after flying in | n/a | card closes, on both sizes |
 
 ## Noticed and left alone
 
@@ -62,12 +63,12 @@ Written for Week 5. It lists what a mouse or touch visitor can do in the 3D view
 - No pan limit is set in the code, so a visitor may be able to pan the room off screen. I did not test how far it goes.
 - Escape does not dismiss the card.
 - The card covers the top of its own piece. It sits 0.5 m in front of the wall, above the centre of the piece. This is how v1 places it.
-- On a portrait phone you normally move between pieces with LIST, because the neighbours are off screen after flying in. A pinch to zoom out should also bring them into view, but I did not script that.
+- On a portrait phone the neighbours are off screen after flying in, so you move between pieces with LIST, or pinch out and tap one. In the scripted run one pinch went from about 5 m to 21 m, which is a big step, and the next reached the 30 m limit.
 - On a 390 px phone the hint line wraps to three lines over the mood line, and the title sits behind the toolbar.
 - There is no "back to overview" control. Adding one would be a new control, which this task rules out.
 
 ## Not tested
 
-- A tablet, a trackpad, a stylus. My scripted touch runs were emulated. The phone check by hand was done before the narrow-screen card fix, so it needs repeating.
+- A tablet, a trackpad, a stylus. My scripted touch runs were emulated. The checks I did by hand, and on which devices, are in the pull request.
 - Firefox and Safari.
 - A headset. The VR code is unchanged, but I have not entered VR with this build.
