@@ -9,7 +9,7 @@ import {
   GALLERY,
   type GalleryItem,
 } from './gallery/artwork.ts'
-import { createInfoCard } from './gallery/infocard.ts'
+import { createInfoCard, CARD_WIDTH } from './gallery/infocard.ts'
 import { loadTheme, createSettingsUI } from './gallery/settings.ts'
 import { updateGlows } from './gallery/glow.ts'
 import { createTools, type ToolUI } from './gallery/tools.ts'
@@ -638,7 +638,10 @@ let tools: ToolUI
 
 function viewFor(group: THREE.Group, item: GalleryItem): { pos: THREE.Vector3; look: THREE.Vector3 } {
   const n = wallNormal(item)
-  const pos = group.position.clone().addScaledVector(n, 3.2).setY(group.position.y + 0.35)
+  // On a narrow screen 3.2 m is too close: the card, 0.5 m off the wall, runs off both sides.
+  const halfView = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.aspect
+  const distance = Math.max(3.2, 0.5 + CARD_WIDTH / 2 / (halfView * 0.92))
+  const pos = group.position.clone().addScaledVector(n, distance).setY(group.position.y + 0.35)
   const look = group.position.clone().setY(group.position.y + 0.6)
   return { pos, look }
 }
