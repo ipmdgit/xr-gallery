@@ -364,8 +364,11 @@ renderer.domElement.addEventListener('pointermove', (e) => {
 // A tap or click selects; a drag looks around. Selecting on pointerdown meant every drag that
 // started on a piece opened its card and every drag that started on bare wall closed it, and
 // the second finger of a pinch closed it too.
-const TAP_SLOP_PX = 8
-let tapStart: { x: number; y: number; id: number } | null = null
+// A fingertip wobbles more than a mouse, so a touch tap gets a wider allowance. No time limit:
+// it would ignore slow, careful taps, which matters more here than catching very slow drags.
+const TAP_SLOP_MOUSE_PX = 8
+const TAP_SLOP_TOUCH_PX = 12
+let tapStart: { x: number; y: number; id: number; slop: number } | null = null
 
 renderer.domElement.addEventListener('pointerdown', (e) => {
   if ((renderer.xr as unknown as { isPresenting: boolean }).isPresenting) return
@@ -374,7 +377,15 @@ renderer.domElement.addEventListener('pointerdown', (e) => {
     focus.active = false
     if (autoRotateSetting) controls.autoRotate = true
   }
-  tapStart = e.isPrimary && e.button === 0 ? { x: e.clientX, y: e.clientY, id: e.pointerId } : null
+  const slop = e.pointerType === 'touch' ? TAP_SLOP_TOUCH_PX : TAP_SLOP_MOUSE_PX
+  tapStart = e.isPrimary && e.button === 0 ? { x: e.clientX, y: e.clientY, id: e.pointerId, slop } : null
+})
+
+// A drag that wanders off and comes back to where it started is still a drag, not a tap.
+renderer.domElement.addEventListener('pointermove', (e) => {
+  if (tapStart && e.pointerId === tapStart.id && Math.hypot(e.clientX - tapStart.x, e.clientY - tapStart.y) > tapStart.slop) {
+    tapStart = null
+  }
 })
 
 renderer.domElement.addEventListener('pointercancel', () => {
@@ -386,7 +397,7 @@ renderer.domElement.addEventListener('pointerup', (e) => {
   const start = tapStart
   tapStart = null
   if (!start || e.pointerId !== start.id) return
-  if (Math.hypot(e.clientX - start.x, e.clientY - start.y) > TAP_SLOP_PX) return
+  if (Math.hypot(e.clientX - start.x, e.clientY - start.y) > start.slop) return
   pointer.x = (e.clientX / window.innerWidth) * 2 - 1
   pointer.y = -(e.clientY / window.innerHeight) * 2 + 1
   raycaster.setFromCamera(pointer, camera)
