@@ -582,8 +582,22 @@ if (localStorage.getItem(VISITED_KEY)) {
 
 document.title = 'EchoBloom Gallery — IPMD'
 
-function createVRButton(): HTMLButtonElement | null {
-  if (!('xr' in navigator)) return null
+// VR is a progressive enhancement, not the way in. The gallery launches as a web app
+// and most visitors have no headset, so the button only appears on a device that can
+// actually start an immersive session. Nobody is offered a control that fails on click.
+let vrButton: HTMLButtonElement | null = null
+
+async function setupVRButton() {
+  const xr = navigator.xr
+  if (!xr) return
+  let supported = false
+  try {
+    supported = await xr.isSessionSupported('immersive-vr')
+  } catch {
+    return
+  }
+  if (!supported) return
+
   const button = document.createElement('button')
   button.className = 'vr ui'
   button.textContent = 'ENTER VR'
@@ -594,7 +608,7 @@ function createVRButton(): HTMLButtonElement | null {
       return
     }
     try {
-      session = await navigator.xr!.requestSession('immersive-vr', {
+      session = await xr.requestSession('immersive-vr', {
         optionalFeatures: ['local-floor'],
       })
       await renderer.xr.setSession(session)
@@ -603,15 +617,15 @@ function createVRButton(): HTMLButtonElement | null {
       button.textContent = 'VR UNAVAILABLE'
     }
   })
-  navigator.xr!.addEventListener('end', () => {
+  xr.addEventListener('end', () => {
     session = null
     button.textContent = 'ENTER VR'
   })
-  return button
+  document.body.appendChild(button)
+  vrButton = button
 }
 
-const vrButton = createVRButton()
-if (vrButton) document.body.appendChild(vrButton)
+void setupVRButton()
 
 // Left and Right step through the main controls in screen order, wrapping at the ends.
 window.addEventListener('keydown', (e) => {
