@@ -718,10 +718,20 @@ function endTour() {
   controls.autoRotate = false
 }
 
+// The live view caps the pixel ratio at 1.75 to protect phone GPUs. On a 3x phone that made the
+// saved photo only 58% of the screen's width, so the photo frame alone renders at the full ratio.
+const PHOTO_MAX_RATIO = 3
+const PHOTO_MAX_SIDE_PX = 4096
+
 function takePhoto() {
+  const liveRatio = renderer.getPixelRatio()
+  const longSide = Math.max(window.innerWidth, window.innerHeight)
+  const photoRatio = Math.max(liveRatio, Math.min(window.devicePixelRatio, PHOTO_MAX_RATIO, PHOTO_MAX_SIDE_PX / longSide))
   document.body.classList.add('photo-mode')
+  if (photoRatio !== liveRatio) renderer.setPixelRatio(photoRatio)
   renderer.render(scene, camera)
   const url = renderer.domElement.toDataURL('image/png')
+  if (photoRatio !== liveRatio) renderer.setPixelRatio(liveRatio)
   document.body.classList.remove('photo-mode')
   const a = document.createElement('a')
   a.href = url
