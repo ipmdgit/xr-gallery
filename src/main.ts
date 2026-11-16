@@ -351,6 +351,10 @@ function setHovered(group: THREE.Group | null) {
 }
 
 renderer.domElement.addEventListener('pointermove', (e) => {
+  // A drag that wanders off and comes back to where it started is still a drag, not a tap.
+  if (tapStart && e.pointerId === tapStart.id && Math.hypot(e.clientX - tapStart.x, e.clientY - tapStart.y) > tapStart.slop) {
+    tapStart = null
+  }
   if ((renderer.xr as unknown as { isPresenting: boolean }).isPresenting) return
   pointer.x = (e.clientX / window.innerWidth) * 2 - 1
   pointer.y = -(e.clientY / window.innerHeight) * 2 + 1
@@ -379,13 +383,6 @@ renderer.domElement.addEventListener('pointerdown', (e) => {
   }
   const slop = e.pointerType === 'touch' ? TAP_SLOP_TOUCH_PX : TAP_SLOP_MOUSE_PX
   tapStart = e.isPrimary && e.button === 0 ? { x: e.clientX, y: e.clientY, id: e.pointerId, slop } : null
-})
-
-// A drag that wanders off and comes back to where it started is still a drag, not a tap.
-renderer.domElement.addEventListener('pointermove', (e) => {
-  if (tapStart && e.pointerId === tapStart.id && Math.hypot(e.clientX - tapStart.x, e.clientY - tapStart.y) > tapStart.slop) {
-    tapStart = null
-  }
 })
 
 renderer.domElement.addEventListener('pointercancel', () => {
@@ -426,8 +423,8 @@ function initControllers() {
     const controller = renderer.xr.getController(handedness)
     controller.addEventListener('select', () => {
       controller.getWorldPosition(from)
-      // The laser is drawn along the controller's -Z. getWorldDirection returns +Z for anything that
-      // is not a camera, so without negate() the trigger picked what was behind the visitor.
+      // The laser is drawn along the controller's -Z. getWorldDirection returns the controller's +Z,
+      // so without negate() the trigger picked what was behind the visitor.
       controller.getWorldDirection(direction).negate()
       raycaster.set(from, direction)
       const hit = raycaster
@@ -739,11 +736,16 @@ function takePhoto() {
   const longSide = Math.max(window.innerWidth, window.innerHeight)
   const photoRatio = Math.max(liveRatio, Math.min(window.devicePixelRatio, PHOTO_MAX_RATIO, PHOTO_MAX_SIDE_PX / longSide))
   document.body.classList.add('photo-mode')
-  if (photoRatio !== liveRatio) renderer.setPixelRatio(photoRatio)
-  renderer.render(scene, camera)
-  const url = renderer.domElement.toDataURL('image/png')
-  if (photoRatio !== liveRatio) renderer.setPixelRatio(liveRatio)
-  document.body.classList.remove('photo-mode')
+  let url: string
+  // If the capture throws, the live view still goes back to its own ratio and shows its controls.
+  try {
+    if (photoRatio !== liveRatio) renderer.setPixelRatio(photoRatio)
+    renderer.render(scene, camera)
+    url = renderer.domElement.toDataURL('image/png')
+  } finally {
+    if (photoRatio !== liveRatio) renderer.setPixelRatio(liveRatio)
+    document.body.classList.remove('photo-mode')
+  }
   const a = document.createElement('a')
   a.href = url
   a.download = `echosphere-${Date.now()}.png`

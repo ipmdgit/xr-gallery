@@ -606,7 +606,8 @@ button.vr {
   }
 
   /* The ENTER VR button takes the bottom right corner, so the hint sits above it
-     and the footer wraps in the space to its left. */
+     and the footer wraps in the space to its left. On a phone with no ENTER VR button,
+     the 150 px to the footer's right stays empty. That is accepted for now. */
   #hint {
     bottom: 76px;
     font-size: 12px;
