@@ -596,6 +596,38 @@ button.vr {
     top: 76px;
     max-height: calc(100dvh - 96px);
   }
+
+  /* On a phone the toolbar fills the top row, so the title goes under it, on one line. */
+  #title {
+    top: 80px;
+    font-size: 14px;
+    letter-spacing: 4px;
+    white-space: nowrap;
+  }
+
+  /* The ENTER VR button takes the bottom right corner, so the hint sits above it
+     and the footer wraps in the space to its left. */
+  #hint {
+    bottom: 76px;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+
+  #mood-line {
+    bottom: 100px;
+    max-width: 86vw;
+  }
+
+  #footer {
+    left: 16px;
+    right: 150px;
+    transform: none;
+    font-size: 9px;
+    line-height: 1.5;
+    letter-spacing: 1.5px;
+    white-space: normal;
+  }
 }
 
 body.photo-mode .ui {
