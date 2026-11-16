@@ -415,7 +415,9 @@ function initControllers() {
     const controller = renderer.xr.getController(handedness)
     controller.addEventListener('select', () => {
       controller.getWorldPosition(from)
-      controller.getWorldDirection(direction)
+      // The laser is drawn along the controller's -Z. getWorldDirection returns +Z for anything that
+      // is not a camera, so without negate() the trigger picked what was behind the visitor.
+      controller.getWorldDirection(direction).negate()
       raycaster.set(from, direction)
       const hit = raycaster
         .intersectObjects(scene.children, true)
@@ -603,7 +605,9 @@ function createVRButton(): HTMLButtonElement | null {
       button.textContent = 'VR UNAVAILABLE'
     }
   })
-  navigator.xr!.addEventListener('end', () => {
+  // XRSystem never fires 'end'; the session does. three reports it as 'sessionend' for both the
+  // EXIT VR button and the headset's own menu, so the button resets and VR can be entered again.
+  renderer.xr.addEventListener('sessionend', () => {
     session = null
     button.textContent = 'ENTER VR'
   })
@@ -915,7 +919,7 @@ renderer.setAnimationLoop(() => {
     hovered.clear()
     for (const controller of controllers) {
       controller.getWorldPosition(from)
-      controller.getWorldDirection(direction)
+      controller.getWorldDirection(direction).negate() // along the laser, as in the select handler
       raycaster.set(from, direction)
       const hit = raycaster
         .intersectObjects([...artworkGroups.values()], true)
