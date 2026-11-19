@@ -9,12 +9,23 @@ export interface ArtworkConfig {
   description: string
   reflection?: string
   type: 'artwork'
-  colors: [number, number]
+  colors?: [number, number]
   wall?: 'back' | 'left' | 'right'
   x?: number
   y?: number
   z?: number
   image?: string
+  /** Hung size of the image in metres, without frame. Defaults to 1.2 x 1.5. */
+  width?: number
+  height?: number
+  /** First Light catalogue fields. */
+  no?: number
+  titleKo?: string | null
+  student?: string
+  completedBy?: string | null
+  thumb?: string
+  room?: number
+  roomLabel?: string
 }
 
 export const GALLERY = {
@@ -72,38 +83,87 @@ async function loadTexture(url: string, fallback: THREE.CanvasTexture): Promise<
   }
 }
 
+/**
+ * Artwork materials ignore tone mapping and fog so a painting shows the colours the artist
+ * chose, not the room's grade. The reveal still dims them through this set.
+ */
+export const artMaterials = new Set<THREE.MeshBasicMaterial>()
+let artBrightness = 1
+
+export function setArtBrightness(v: number): void {
+  artBrightness = v
+  for (const m of artMaterials) m.color.setScalar(v)
+}
+
+const FRAME = 0.07
+const MAT = 0.045
+
 export async function createArtwork(config: ArtworkConfig): Promise<THREE.Group> {
-  const fallback = makeCanvasTexture(config.title, config.colors[0], config.colors[1])
+  const w = config.width ?? 1.2
+  const h = config.height ?? 1.5
+  const [c0, c1] = config.colors ?? [220, 260]
+  const fallback = makeCanvasTexture(config.title, c0, c1)
   const texture = config.image ? await loadTexture(config.image, fallback) : fallback
+  texture.anisotropy = 4
 
   const group = new THREE.Group()
   group.name = config.id
   group.userData = { artwork: true, config }
 
   const frame = new THREE.Mesh(
-    new THREE.BoxGeometry(1.28, 1.6, 0.06),
-    new THREE.MeshStandardMaterial({ color: 0x0c0c10, roughness: 0.6 }),
+    new THREE.BoxGeometry(w + 2 * (MAT + FRAME), h + 2 * (MAT + FRAME), 0.06),
+    new THREE.MeshStandardMaterial({ color: 0x0c0c10, roughness: 0.55, metalness: 0.15 }),
   )
   frame.position.z = -0.02
-  frame.castShadow = true
   frame.userData = { artwork: true, config, frame: true }
 
-  const art = new THREE.Mesh(
-    new THREE.PlaneGeometry(1.2, 1.5),
-    new THREE.MeshStandardMaterial({
-      map: texture,
-      emissive: 0xffffff,
-      emissiveIntensity: 0.55,
-      emissiveMap: texture,
-    }),
+  // A paper-white mat between frame and image, the way works on paper are hung.
+  const mat = new THREE.Mesh(
+    new THREE.PlaneGeometry(w + 2 * MAT, h + 2 * MAT),
+    new THREE.MeshStandardMaterial({ color: 0xf3efe6, roughness: 0.95 }),
   )
-  art.position.z = 0.05
+  mat.position.z = 0.012
+  mat.userData = { artwork: true, config }
+
+  const artMat = new THREE.MeshBasicMaterial({ map: texture, toneMapped: false, fog: false })
+  artMat.color.setScalar(artBrightness)
+  artMaterials.add(artMat)
+  const art = new THREE.Mesh(new THREE.PlaneGeometry(w, h), artMat)
+  art.position.z = 0.016
   art.userData = { artwork: true, config }
 
-  group.add(frame, art)
-  addGlow(group)
+  group.add(frame, mat, art)
+  addGlow(group, w + 2 * (MAT + FRAME) + 0.18, h + 2 * (MAT + FRAME) + 0.18)
   placeWallArtwork(group, config)
   return group
+}
+
+/** Free a room's GPU memory before the next room loads. */
+export function disposeObject(root: THREE.Object3D): void {
+  root.traverse((o) => {
+    const mesh = o as THREE.Mesh
+    mesh.geometry?.dispose()
+    const mats = mesh.material
+      ? Array.isArray(mesh.material) ? mesh.material : [mesh.material]
+      : []
+    for (const m of mats) {
+      const basic = m as THREE.MeshBasicMaterial
+      artMaterials.delete(basic)
+      if (basic.map && !basic.map.userData.shared) basic.map.dispose()
+      m.dispose()
+    }
+  })
+}
+
+export function wallNormalOf(config: ArtworkConfig): THREE.Vector3 {
+  switch (config.wall ?? 'back') {
+    case 'left':
+      return new THREE.Vector3(1, 0, 0)
+    case 'right':
+      return new THREE.Vector3(-1, 0, 0)
+    default:
+      return new THREE.Vector3(0, 0, 1)
+  }
 }
 
 function placeWallArtwork(group: THREE.Group, config: ArtworkConfig): void {
@@ -123,7 +183,6 @@ function placeWallArtwork(group: THREE.Group, config: ArtworkConfig): void {
     default:
       group.position.set(config.x ?? 0, y, -D / 2 + depth)
       group.rotation.y = 0
-      group.lookAt(config.x ?? 0, y, 0)
   }
 }
 

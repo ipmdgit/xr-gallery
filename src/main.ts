@@ -2,14 +2,27 @@ import './style.css'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js'
-import sceneConfig from './data/artworks.json'
 import {
   createArtwork,
-  mountSculpture,
   GALLERY,
+  setArtBrightness,
+  disposeObject,
+  wallNormalOf,
+  type ArtworkConfig,
   type GalleryItem,
 } from './gallery/artwork.ts'
-import { createInfoCard, CARD_WIDTH } from './gallery/infocard.ts'
+import {
+  ROOMS,
+  WORK_COUNT,
+  EXHIBITION,
+  layoutRoom,
+  roomLabel,
+  createRoomSign,
+  createWash,
+  prefetchRoom,
+} from './gallery/hall.ts'
+import { createPlaque } from './gallery/plaque.ts'
+import { createInfoCard } from './gallery/infocard.ts'
 import { loadTheme, createSettingsUI } from './gallery/settings.ts'
 import { updateGlows } from './gallery/glow.ts'
 import { createTools, type ToolUI } from './gallery/tools.ts'
@@ -22,7 +35,12 @@ import { createJourneyField } from './gallery/journey.ts'
 const MOOD_KEY = 'echosphere:mood'
 const VISITED_KEY = 'echosphere:visited'
 
-const items = sceneConfig as unknown as GalleryItem[]
+// Every work in the hall, in walking order. Each room is laid out once up front; only the
+// current room is ever built in the scene.
+const roomLayouts: ArtworkConfig[][] = ROOMS.map(layoutRoom)
+const items: ArtworkConfig[] = roomLayouts.flat()
+const itemById = new Map(items.map((it) => [it.id, it]))
+const indexById = new Map(items.map((it, i) => [it.id, i]))
 
 const FATAL = `
   <div class="fatal">
@@ -33,7 +51,7 @@ const FATAL = `
       <li>Fully quit the browser (<b>Cmd+Q</b>) and reopen it &mdash; closing the tab is not enough.</li>
       <li>Check <b>Settings &rarr; System &rarr; Use graphics acceleration when available</b>.</li>
       <li>If that is already on, try <b>chrome://gpu</b> and look for
-      <i>&ldquo;WebGL: Disabled&rdquoi> or <i>&ldquo;Problems Detected&rdquoi>.</li>
+      <i>&ldquo;WebGL: Disabled&rdquo;</i> or <i>&ldquo;Problems Detected&rdquo;</i>.</li>
       <li>Safari: <b>Safari &rarr; Settings &rarr; Advanced &rarr; Enable WebGL</b> must be ticked.</li>
     </ol>
   </div>`
@@ -76,17 +94,19 @@ const pmrem = new THREE.PMREMGenerator(renderer)
 scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture
 scene.environmentIntensity = 0.6
 
+// A longer lens on wide screens keeps the room from feeling cavernous; a phone needs the width.
+const lensFor = (aspect: number) => (aspect < 1 ? 75 : 60)
 const camera = new THREE.PerspectiveCamera(
-  75,
+  lensFor(window.innerWidth / window.innerHeight),
   window.innerWidth / window.innerHeight,
   0.1,
   1000,
 )
-camera.position.set(0, 1.8, 8)
+camera.position.set(0, 1.75, 6.6)
 
 const controls = new OrbitControls(camera, renderer.domElement)
 controls.enableDamping = true
-controls.target.set(0, 1.75, 0)
+controls.target.set(0, 1.9, 0)
 controls.maxPolarAngle = Math.PI / 2 + 0.09
 controls.minDistance = 0.8
 controls.maxDistance = 30
@@ -159,8 +179,8 @@ function addWall(w: number, h: number, x: number, y: number, z: number, ry = 0) 
   scene.add(m)
 }
 addWall(W, H, 0, H / 2, -D / 2)
-addWall(H, H, -W / 2, H / 2, 0, Math.PI / 2)
-addWall(H, H, W / 2, H / 2, 0, -Math.PI / 2)
+addWall(D, H, -W / 2, H / 2, 0, Math.PI / 2)
+addWall(D, H, W / 2, H / 2, 0, -Math.PI / 2)
 
 // Baseboard trim
 const baseboardMat = new THREE.MeshStandardMaterial({
@@ -176,57 +196,41 @@ function addBaseboard(w: number, x: number, z: number, ry = 0) {
   scene.add(m)
 }
 addBaseboard(W, 0, -D / 2 + 0.04)
-addBaseboard(H, -W / 2 + 0.04, 0, Math.PI / 2)
-addBaseboard(H, W / 2 - 0.04, 0, -Math.PI / 2)
+addBaseboard(D, -W / 2 + 0.04, 0, Math.PI / 2)
+addBaseboard(D, W / 2 - 0.04, 0, -Math.PI / 2)
 
 const hangerMat = new THREE.MeshStandardMaterial({ color: 0x2a2a34, roughness: 0.4, metalness: 0.3 })
-function addHanger(x: number, y: number, z: number) {
-  const hanger = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.04, 0.04), hangerMat)
-  hanger.position.set(x, y, z)
-  scene.add(hanger)
+
+// Picture rail along the top of the three walls.
+function addRail(w: number, x: number, z: number, ry = 0) {
+  const m = new THREE.Mesh(new THREE.BoxGeometry(w, 0.05, 0.05), hangerMat)
+  m.position.set(x, H - 0.35, z)
+  m.rotation.y = ry
+  scene.add(m)
 }
+addRail(W, 0, -D / 2 + 0.03)
+addRail(D, -W / 2 + 0.03, 0, Math.PI / 2)
+addRail(D, W / 2 - 0.03, 0, -Math.PI / 2)
 
 const initialTheme = loadTheme()
 const artworkGroups = new Map<string, THREE.Group>()
-for (const item of items) {
-  if (item.type === 'artwork') {
-    void createArtwork(item).then((group) => {
-      scene.add(group)
-      artworkGroups.set(item.id, group)
-      group.traverse((o) => {
-        if (o.userData.frame) {
-          ;((o as THREE.Mesh).material as THREE.MeshStandardMaterial).color.set(
-            initialTheme.frame,
-          )
-        }
-      })
-      const top = (group.position.y ?? 1.85) + 0.9
-      switch (item.wall ?? 'back') {
-        case 'left':
-          addHanger(-W / 2 + 0.09, top, item.z ?? 0)
-          break
-        case 'right':
-          addHanger(W / 2 - 0.09, top, item.z ?? 0)
-          break
-        default:
-          addHanger(item.x ?? 0, top, -D / 2 + 0.06)
-      }
-    })
-  } else {
-    void mountSculpture(scene, item)
-  }
-}
 
 const infoCard = createInfoCard()
 infoCard.mesh.position.set(0, 1.2, 1.5)
 scene.add(infoCard.mesh)
+
+const plaque = createPlaque({
+  onPrev: () => stepWork(-1),
+  onNext: () => stepWork(1),
+  onClose: () => closeWork(),
+})
 
 const wisps = createWisps()
 scene.add(wisps.points)
 
 const sound = createSoundscape(false)
 
-const journey = createJourneyField(scene, items, initialTheme.accent)
+let journey = createJourneyField(scene, [], initialTheme.accent)
 
 const raycaster = new THREE.Raycaster()
 const pointer = new THREE.Vector2()
@@ -240,11 +244,16 @@ const hovered = new Set<THREE.Group>()
 // Robot M mood colours override whatever the theme's own accent is, so the
 // gallery always speaks the same visual language as the hardware.
 let moodAccent: string | null = null
+let currentAccent = initialTheme.accent
+let roomSign: THREE.Mesh | null = null
 
 function pushAccent(themeAccent: string) {
   const accent = moodAccent ?? themeAccent
+  currentAccent = accent
   infoCard.setAccent(accent)
   journey.setAccent(accent)
+  plaque.setAccent(accent)
+  if (roomSign) (roomSign.material as THREE.MeshBasicMaterial).color.set(accent).lerp(new THREE.Color(0xffffff), 0.45)
   const tint = new THREE.Color(accent)
   for (const laser of laserMats) laser.color.copy(tint)
 }
@@ -262,6 +271,7 @@ const themeTargets: ThemeTargets = {
   cardAccent: (accent) => pushAccent(accent),
 }
 
+let pendingWork: string | null = null
 const REVEAL_MS = 6500
 const reveal = { t: 0, active: false, start: 0 }
 const glide = { active: false, from: new THREE.Vector3(), to: new THREE.Vector3() }
@@ -271,6 +281,7 @@ function startReveal() {
   reveal.active = true
   reveal.start = performance.now()
   journey.reveal(0)
+  setArtBrightness(0.12)
   renderer.toneMappingExposure = 0.1
   const fog = scene.fog as THREE.Fog | null
   if (fog) {
@@ -279,7 +290,7 @@ function startReveal() {
   }
   glide.active = true
   glide.from.copy(camera.position)
-  glide.to.set(0, 1.8, 8)
+  glide.to.set(0, 1.75, 6.6)
 }
 
 function stepReveal(now: number) {
@@ -287,6 +298,7 @@ function stepReveal(now: number) {
   const raw = Math.min((now - reveal.start) / REVEAL_MS, 1)
   reveal.t = raw < 1 ? 1 - Math.pow(1 - raw, 3) : 1
   journey.reveal(reveal.t)
+  setArtBrightness(0.12 + 0.88 * reveal.t)
   renderer.toneMappingExposure = 0.1 + 1.05 * reveal.t
   const fog = scene.fog as THREE.Fog | null
   if (fog) {
@@ -303,6 +315,11 @@ function stepReveal(now: number) {
     camera.position.copy(glide.to)
     controls.target.copy(homeLook)
     controls.update()
+    if (pendingWork) {
+      const it = itemById.get(pendingWork)
+      pendingWork = null
+      if (it) showWork(it, true)
+    }
   }
 }
 
@@ -313,15 +330,7 @@ function normalOf(hit: THREE.Intersection): THREE.Vector3 {
 }
 
 function wallNormal(item: GalleryItem): THREE.Vector3 {
-  if (item.type !== 'artwork') return new THREE.Vector3(0, 0, 1)
-  switch (item.wall ?? 'back') {
-    case 'left':
-      return new THREE.Vector3(1, 0, 0)
-    case 'right':
-      return new THREE.Vector3(-1, 0, 0)
-    default:
-      return new THREE.Vector3(0, 0, 1)
-  }
+  return item.type === 'artwork' ? wallNormalOf(item) : new THREE.Vector3(0, 0, 1)
 }
 
 function cardSpotFor(group: THREE.Group, item: GalleryItem): THREE.Vector3 {
@@ -403,19 +412,17 @@ renderer.domElement.addEventListener('pointerup', (e) => {
     .find((h) => h.object.userData.artwork)
   if (!hit) {
     infoCard.hide()
+    plaque.hide()
     return
   }
   const item = hit.object.userData.config as GalleryItem
-  // Same move as picking the piece from LIST: fly in so the card is readable. During a tour the
-  // tour owns the camera, so only the card is placed.
-  const group = tour.active ? undefined : artworkGroups.get(item.id)
-  if (group) {
-    startFocus(group, item)
-    infoCard.show(item, cardSpotFor(group, item))
-    tools.setActiveItem(item.id)
-  } else {
+  if (item.type !== 'artwork') {
     placeCard(item, hit)
+    return
   }
+  // Same move as picking the work from LIST: fly in so it fills the view. During a tour the
+  // tour owns the camera, so only the label changes.
+  showWork(item, !tour.active)
 })
 
 function initControllers() {
@@ -454,13 +461,14 @@ function initControllers() {
 }
 initControllers()
 
-const clock = new THREE.Clock()
+const timer = new THREE.Timer()
+timer.connect(document)
 const cameraGoal = new THREE.Vector3()
 const lookGoal = new THREE.Vector3()
 const focus = { active: false, pos: new THREE.Vector3(), look: new THREE.Vector3() }
 const tour = { active: false, index: 0, waiting: false, timer: 0 }
-const homePos = new THREE.Vector3(0, 2.15, 7.99)
-const homeLook = new THREE.Vector3(0, 1.75, 0)
+const homePos = new THREE.Vector3(0, 1.75, 6.6)
+const homeLook = new THREE.Vector3(0, 1.9, 0)
 let homeCaptured = false
 let autoRotateSetting = false
 const settings = createSettingsUI({
@@ -483,7 +491,7 @@ const settings = createSettingsUI({
 const title = document.createElement('div')
 title.id = 'title'
 title.className = 'ui'
-title.textContent = 'ECHOBLOOM GALLERY'
+title.textContent = EXHIBITION.toUpperCase()
 document.body.appendChild(title)
 
 const moodLine = document.createElement('div')
@@ -495,8 +503,8 @@ const hint = document.createElement('div')
 hint.id = 'hint'
 hint.className = 'ui'
 hint.textContent = window.matchMedia('(pointer: coarse)').matches
-  ? 'Drag to look · pinch to zoom · tap a piece'
-  : 'Drag to look · scroll to zoom · click a piece · hover for glow'
+  ? 'Drag to look · pinch to zoom · tap a work'
+  : 'Drag to look · scroll to zoom · click a work · ← → to walk'
 document.body.appendChild(hint)
 
 const footer = document.createElement('div')
@@ -524,17 +532,17 @@ landing.id = 'landing'
 landing.className = 'ui'
 const landingKicker = document.createElement('div')
 landingKicker.className = 'landing-kicker'
-landingKicker.textContent = 'AN ECHOBLOOM INITIATIVE BY IPMD'
+landingKicker.textContent = 'THE ECHOBLOOM EXHIBITION HALL'
 const landingTitle = document.createElement('div')
 landingTitle.className = 'landing-title'
-landingTitle.textContent = 'ECHOBLOOM GALLERY'
+landingTitle.textContent = EXHIBITION.toUpperCase()
 const landingLine = document.createElement('div')
 landingLine.className = 'landing-line'
 landingLine.textContent = 'Take a breath. Let the art meet how you feel.'
 const landingSub = document.createElement('div')
 landingSub.className = 'landing-sub'
 landingSub.textContent =
-  'A healing space where human artists and visitors create meaning together — a room that senses the mood and meets you there.'
+  `${WORK_COUNT} works by student artists, in ${ROOMS.length} rooms — a healing space that senses the mood and meets you there.`
 const landingEnter = document.createElement('button')
 landingEnter.id = 'landing-enter'
 landingEnter.textContent = 'ENTER THE GALLERY'
@@ -590,7 +598,7 @@ if (localStorage.getItem(VISITED_KEY)) {
   landingEnter.focus({ preventScroll: true })
 }
 
-document.title = 'EchoBloom Gallery — IPMD'
+document.title = `${EXHIBITION} — EchoBloom Exhibition Hall`
 
 function createVRButton(): HTMLButtonElement | null {
   if (!('xr' in navigator)) return null
@@ -648,13 +656,33 @@ window.addEventListener('keydown', (e) => {
 
 let tools: ToolUI
 
+const isPresenting = () => (renderer.xr as unknown as { isPresenting: boolean }).isPresenting
+
+/** Where the camera stands to look at a work: square on, at the work's height, far enough back to frame it and leave room for its label. */
 function viewFor(group: THREE.Group, item: GalleryItem): { pos: THREE.Vector3; look: THREE.Vector3 } {
   const n = wallNormal(item)
-  // On a narrow screen 3.2 m is too close: the card, 0.5 m off the wall, runs off both sides.
-  const halfView = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.aspect
-  const distance = Math.max(3.2, 0.5 + CARD_WIDTH / 2 / (halfView * 0.92))
-  const pos = group.position.clone().addScaledVector(n, distance).setY(group.position.y + 0.35)
-  const look = group.position.clone().setY(group.position.y + 0.6)
+  const w = item.type === 'artwork' ? (item.width ?? 1.2) : 1.2
+  const h = item.type === 'artwork' ? (item.height ?? 1.5) : 1.5
+  const t = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2))
+  const narrow = window.innerWidth <= 640
+  // Frame the work in the screen band left free by the UI: under the room bar, and on a phone
+  // above the label sheet. `fillH` is the band's share of the height, `shift` how far its
+  // centre sits below (+) or above (-) the screen centre, as a share of half the height.
+  const vh = window.innerHeight
+  const top = narrow ? 168 : 140
+  const bottom = narrow ? Math.min(vh * 0.46, 330) + 16 : 96
+  const band = Math.max(vh - top - bottom, vh * 0.35)
+  const fillH = (band / vh) * 0.92
+  const shift = (top + band / 2 - vh / 2) / (vh / 2)
+  const fillW = narrow ? 0.88 : 0.56
+  // Fit the frame as well as the image.
+  const fh = h + 0.3
+  const fw = w + 0.3
+  const distance = Math.max(fh / 2 / (t * fillH), fw / 2 / (t * camera.aspect * fillW), 1.4)
+  // Moving the look point up puts the work lower on screen, and the reverse.
+  const lookY = group.position.y + shift * t * distance
+  const look = group.position.clone().setY(lookY)
+  const pos = group.position.clone().addScaledVector(n, distance).setY(lookY)
   return { pos, look }
 }
 
@@ -668,32 +696,212 @@ function startFocus(group: THREE.Group, item: GalleryItem) {
   controls.autoRotate = false
 }
 
-function jumpTo(group: THREE.Group, item: GalleryItem) {
-  const v = viewFor(group, item)
-  camera.position.copy(v.pos)
-  controls.target.copy(v.look)
-  controls.update()
+// ---------------------------------------------------------------------------------------------
+// Rooms. One room is in the scene at a time; stepping to another fades through black, frees the
+// old room's textures and builds the new one.
+
+let currentRoom = -1
+let roomContent: THREE.Group | null = null
+let transitioning = false
+let activeWorkId: string | null = null
+
+const fadeEl = document.createElement('div')
+fadeEl.id = 'room-fade'
+document.body.appendChild(fadeEl)
+
+const wait = (ms: number) => new Promise((r) => setTimeout(r, ms))
+
+async function buildRoom(index: number): Promise<void> {
+  const layout = roomLayouts[index]
+  const groups = await Promise.all(layout.map((cfg) => createArtwork(cfg)))
+  const content = new THREE.Group()
+  content.name = `room-${ROOMS[index].number}`
+  const frameColor = settings.currentTheme().frame
+  groups.forEach((group, i) => {
+    group.traverse((o) => {
+      if (o.userData.frame) ((o as THREE.Mesh).material as THREE.MeshStandardMaterial).color.set(frameColor)
+      if (o.userData.glow) ((o as THREE.Mesh).material as THREE.MeshBasicMaterial).color.set(currentAccent)
+    })
+    content.add(createWash(layout[i]), group)
+  })
+  const sign = createRoomSign(ROOMS[index])
+  content.add(sign)
+
+  // Swap: drop the old room, then put the new one in.
+  if (roomContent) {
+    scene.remove(roomContent)
+    disposeObject(roomContent)
+  }
+  artworkGroups.clear()
+  groups.forEach((g, i) => artworkGroups.set(layout[i].id, g))
+  hovered.clear()
+  roomContent = content
+  roomSign = sign
+  scene.add(content)
+
+  journey.dispose()
+  journey = createJourneyField(scene, layout, currentAccent)
+  journey.reveal(reveal.active ? reveal.t : 1)
+  pushAccent(settings.currentTheme().accent)
+
+  currentRoom = index
+  updateRoomBar()
+  prefetchRoom(ROOMS[index + 1])
+  prefetchRoom(ROOMS[index - 1])
 }
 
+/** Move to another room. With `workId`, arrive already looking at that work. */
+async function goToRoom(index: number, workId?: string): Promise<void> {
+  if (index < 0 || index >= ROOMS.length || transitioning) return
+  if (index === currentRoom) {
+    if (workId) showWork(itemById.get(workId)!, true)
+    return
+  }
+  transitioning = true
+  infoCard.hide()
+  plaque.hide()
+  fadeEl.classList.add('on')
+  await wait(380)
+  await buildRoom(index)
+  focus.active = false
+  const item = workId ? itemById.get(workId) : undefined
+  const group = item ? artworkGroups.get(item.id) : undefined
+  if (item && group) {
+    const v = viewFor(group, item)
+    camera.position.copy(v.pos)
+    controls.target.copy(v.look)
+    showWork(item, false)
+  } else {
+    camera.position.copy(homePos)
+    controls.target.copy(homeLook)
+    activeWorkId = null
+    tools.setActiveItem(null)
+    setHash(`room-${ROOMS[index].number}`)
+  }
+  controls.update()
+  fadeEl.classList.remove('on')
+  transitioning = false
+}
+
+/** Show a work's label and, with `fly`, glide the camera to it. Crosses rooms if it has to. */
+function showWork(item: ArtworkConfig, fly = true) {
+  const room = ROOMS.findIndex((r) => r.number === item.room)
+  if (room !== currentRoom) {
+    void goToRoom(room, item.id)
+    return
+  }
+  const group = artworkGroups.get(item.id)
+  if (!group) return
+  if (fly) startFocus(group, item)
+  if (isPresenting()) {
+    infoCard.show(item, cardSpotFor(group, item))
+  } else {
+    plaque.show(item, { index: indexById.get(item.id) ?? 0, total: items.length })
+  }
+  activeWorkId = item.id
+  tools.setActiveItem(item.id)
+  setHash(`work-${item.no}`)
+}
+
+function stepWork(step: number) {
+  if (tour.active) endTour()
+  const at = activeWorkId ? (indexById.get(activeWorkId) ?? -1) : -1
+  const next = items[(at + step + items.length) % items.length]
+  showWork(next, true)
+}
+
+function closeWork() {
+  plaque.hide()
+  infoCard.hide()
+  activeWorkId = null
+  tools.setActiveItem(null)
+  setHash(`room-${ROOMS[currentRoom].number}`)
+}
+
+function setHash(h: string) {
+  history.replaceState(null, '', `#${h}`)
+}
+
+/** `#work-18` or `#room-3`, so a link can open the hall at one work or room. */
+function readHash(): { room: number; workId?: string } {
+  const h = location.hash.slice(1)
+  const work = /^work-(\d+)$/.exec(h)
+  if (work) {
+    const it = items.find((i) => i.no === Number(work[1]))
+    if (it) return { room: ROOMS.findIndex((r) => r.number === it.room), workId: it.id }
+  }
+  const room = /^room-(\d+)$/.exec(h)
+  if (room) {
+    const idx = ROOMS.findIndex((r) => r.number === Number(room[1]))
+    if (idx !== -1) return { room: idx }
+  }
+  return { room: 0 }
+}
+
+// Room bar: the hall's wayfinding, top centre.
+const roomBar = document.createElement('nav')
+roomBar.id = 'room-bar'
+roomBar.className = 'ui'
+roomBar.setAttribute('aria-label', 'Rooms')
+const roomPrev = document.createElement('button')
+roomPrev.className = 'room-step'
+roomPrev.setAttribute('aria-label', 'Previous room')
+roomPrev.textContent = '‹'
+const roomNext = document.createElement('button')
+roomNext.className = 'room-step'
+roomNext.setAttribute('aria-label', 'Next room')
+roomNext.textContent = '›'
+const roomInfo = document.createElement('div')
+roomInfo.className = 'room-info'
+const roomNum = document.createElement('div')
+roomNum.className = 'room-num'
+const roomName = document.createElement('div')
+roomName.className = 'room-name'
+const roomDots = document.createElement('div')
+roomDots.className = 'room-dots'
+const dotButtons = ROOMS.map((r, i) => {
+  const d = document.createElement('button')
+  d.className = 'room-dot'
+  d.setAttribute('aria-label', roomLabel(r))
+  d.title = `${roomLabel(r)} — ${r.works.length} work${r.works.length === 1 ? '' : 's'}`
+  d.addEventListener('click', () => {
+    if (tour.active) endTour()
+    void goToRoom(i)
+  })
+  roomDots.appendChild(d)
+  return d
+})
+roomInfo.append(roomNum, roomName, roomDots)
+roomBar.append(roomPrev, roomInfo, roomNext)
+document.body.appendChild(roomBar)
+roomPrev.addEventListener('click', () => {
+  if (tour.active) endTour()
+  void goToRoom(currentRoom - 1)
+})
+roomNext.addEventListener('click', () => {
+  if (tour.active) endTour()
+  void goToRoom(currentRoom + 1)
+})
+
+function updateRoomBar() {
+  const r = ROOMS[currentRoom]
+  roomNum.textContent = `Room ${r.number} of ${ROOMS.length}  ·  ${r.works.length} work${r.works.length === 1 ? '' : 's'}`
+  roomName.textContent = r.name ?? `Room ${r.number}`
+  roomPrev.disabled = currentRoom === 0
+  roomNext.disabled = currentRoom === ROOMS.length - 1
+  dotButtons.forEach((d, i) => d.classList.toggle('current', i === currentRoom))
+}
+
+// The tour walks the whole hall, starting in the room you are standing in.
 function startTour() {
   tour.active = true
-  tour.index = 0
   tour.waiting = false
   tour.timer = 0
   tools.setTourActive(true)
   controls.autoRotate = false
-  while (tour.index < items.length) {
-    const item = items[tour.index]
-    tour.index++
-    const group = item.type === 'artwork' ? artworkGroups.get(item.id) : null
-    if (group) {
-      jumpTo(group, item)
-      infoCard.show(item, cardSpotFor(group, item))
-      tools.setActiveItem(item.id)
-      return
-    }
-  }
-  endTour()
+  const first = items.findIndex((it) => it.room === ROOMS[currentRoom].number)
+  tour.index = first === -1 ? 0 : first
+  tourStep()
 }
 
 function tourStep() {
@@ -703,21 +911,14 @@ function tourStep() {
   }
   const item = items[tour.index]
   tour.index++
-  const group = item.type === 'artwork' ? artworkGroups.get(item.id) : null
-  if (group) {
-    startFocus(group, item)
-    infoCard.show(item, cardSpotFor(group, item))
-    tools.setActiveItem(item.id)
-  } else {
-    tourStep()
-  }
+  showWork(item, true)
 }
 
 function endTour() {
   tour.active = false
   tour.waiting = false
   tools.setTourActive(false)
-  infoCard.hide()
+  closeWork()
   cameraGoal.copy(homePos)
   lookGoal.copy(homeLook)
   focus.pos.copy(homePos)
@@ -748,7 +949,7 @@ function takePhoto() {
   }
   const a = document.createElement('a')
   a.href = url
-  a.download = `echosphere-${Date.now()}.png`
+  a.download = `first-light-${Date.now()}.png`
   a.click()
 }
 
@@ -762,13 +963,24 @@ tools = createTools({
   },
 })
 tools.renderList(items, null, (item) => {
-  const group = item.type === 'artwork' ? artworkGroups.get(item.id) : null
-  if (group) {
-    startFocus(group, item)
-    infoCard.show(item, cardSpotFor(group, item))
-    tools.setActiveItem(item.id)
-  }
+  if (tour.active) endTour()
+  if (item.type === 'artwork') showWork(item, true)
 })
+
+// Arrow keys with nothing focused: step between works when a label is open, between rooms otherwise.
+window.addEventListener('keydown', (e) => {
+  if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return
+  if (document.activeElement && document.activeElement !== document.body) return
+  e.preventDefault()
+  const step = e.key === 'ArrowRight' ? 1 : -1
+  if (activeWorkId) stepWork(step)
+  else void goToRoom(currentRoom + step)
+})
+
+const startAt = readHash()
+// A linked work is shown once the opening reveal has settled; see stepReveal.
+pendingWork = startAt.workId ?? null
+void buildRoom(startAt.room)
 
 ;(window as unknown as Record<string, unknown>).__es = {
   glowOpacities: () => [...artworkGroups.values()].map((g) => (g.userData.glowMat as THREE.MeshBasicMaterial).opacity),
@@ -889,13 +1101,16 @@ renderer.xr.addEventListener('sessionend', () => {
 
 window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth / window.innerHeight
+  camera.fov = lensFor(camera.aspect)
   camera.updateProjectionMatrix()
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75))
   renderer.setSize(window.innerWidth, window.innerHeight)
 })
 
 window.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && tour.active) endTour()
+  if (e.key !== 'Escape') return
+  if (tour.active) endTour()
+  else if (activeWorkId) closeWork()
 })
 
 // Dev-only performance readout: open the dev server with ?perf. The import.meta.env.DEV
@@ -911,7 +1126,8 @@ const viewPos = new THREE.Vector3()
 let elapsed = 0
 renderer.setAnimationLoop(() => {
   perf?.begin()
-  const delta = clock.getDelta()
+  timer.update()
+  const delta = Math.min(timer.getDelta(), 0.1)
   elapsed += delta
 
   stepReveal(performance.now())
@@ -966,10 +1182,10 @@ renderer.setAnimationLoop(() => {
       if (!tour.active && autoRotateSetting) controls.autoRotate = true
     }
   }
-  if (tour.active && !focus.active) {
+  if (tour.active && !focus.active && !transitioning) {
     tour.waiting = true
     tour.timer += delta
-    if (tour.timer > 2.4) {
+    if (tour.timer > 3.2) {
       tour.waiting = false
       tour.timer = 0
       tourStep()

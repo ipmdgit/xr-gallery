@@ -5,7 +5,6 @@ const WARM = 0xffe6c4
 
 export interface Beacon {
   anchor: THREE.Vector3
-  column: THREE.Mesh
   pool: THREE.Mesh
   setAccent: (hex: string) => void
 }
@@ -46,13 +45,13 @@ function anchorFor(item: GalleryItem): THREE.Vector3 {
   }
 }
 
-function inward(anchor: THREE.Vector3): THREE.Vector3 {
-  const { W, D } = GALLERY
-  return new THREE.Vector3(
-    -Math.sign(anchor.x) * 0.75,
-    0,
-    anchor.z < 0 ? 0.75 : 0,
-  ).clampLength(0, Math.max(W, D) / 2)
+/** The spot on the floor in front of a work where a visitor would stand. */
+function standingSpot(anchor: THREE.Vector3): THREE.Vector3 {
+  const { W } = GALLERY
+  const out = anchor.clone().setY(0)
+  if (Math.abs(anchor.x) > W / 2 - 0.5) out.x -= Math.sign(anchor.x) * 1.5
+  else out.z += 1.5
+  return out
 }
 
 function createDust(count: number) {
@@ -93,12 +92,12 @@ function createDust(count: number) {
 }
 
 function createRibbon(anchor: THREE.Vector3, accent: string, count: number): Ribbon {
-  const end = inward(anchor).setY(0.04)
+  const end = standingSpot(anchor).setY(0.04)
+  const start = new THREE.Vector3(0, 0.04, D_FRONT)
   const path = new THREE.CatmullRomCurve3([
-    new THREE.Vector3(0, 0.04, D_FRONT),
-    new THREE.Vector3(0, 0.04, 2.6),
-    new THREE.Vector3(end.x * 0.3, 0.04, 0.6),
-    new THREE.Vector3(end.x * 0.72, 0.04, end.z * 0.5),
+    start,
+    new THREE.Vector3(end.x * 0.3, 0.04, THREE.MathUtils.lerp(start.z, end.z, 0.4)),
+    new THREE.Vector3(end.x * 0.8, 0.04, THREE.MathUtils.lerp(start.z, end.z, 0.8)),
     end.clone(),
   ])
 
@@ -116,10 +115,10 @@ function createRibbon(anchor: THREE.Vector3, accent: string, count: number): Rib
   geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
   const material = new THREE.PointsMaterial({
     color: new THREE.Color(accent).lerp(new THREE.Color(WARM), 0.35),
-    size: 0.06,
+    size: 0.04,
     sizeAttenuation: true,
     transparent: true,
-    opacity: 0.5,
+    opacity: 0.3,
     blending: THREE.AdditiveBlending,
     depthWrite: false,
   })
@@ -132,45 +131,26 @@ function createRibbon(anchor: THREE.Vector3, accent: string, count: number): Rib
 const D_FRONT = 5.2
 
 function createBeacon(anchor: THREE.Vector3, accent: string): Beacon {
-  const inner = inward(anchor)
-  const group = new THREE.Group()
-
-  const columnGeo = new THREE.CylinderGeometry(0.22, 0.5, 3.1, 18, 1, true)
-  const columnMat = new THREE.MeshBasicMaterial({
-    color: accent,
-    transparent: true,
-    opacity: 0.07,
-    blending: THREE.AdditiveBlending,
-    depthWrite: false,
-    side: THREE.DoubleSide,
-  })
-  const column = new THREE.Mesh(columnGeo, columnMat)
-  column.position.set(inner.x, 1.55, inner.z)
-  group.add(column)
-
-  const poolGeo = new THREE.CircleGeometry(0.95, 28)
+  const spot = standingSpot(anchor)
+  const poolGeo = new THREE.CircleGeometry(0.7, 28)
   const poolMat = new THREE.MeshBasicMaterial({
     color: accent,
     transparent: true,
-    opacity: 0.13,
+    opacity: 0.09,
     blending: THREE.AdditiveBlending,
     depthWrite: false,
   })
   const pool = new THREE.Mesh(poolGeo, poolMat)
   pool.rotation.x = -Math.PI / 2
-  pool.position.set(inner.x, 0.02, inner.z)
-  group.add(pool)
+  pool.position.set(spot.x, 0.02, spot.z)
 
-  // No real light here: a point light per beacon cost about 5x the frame time on a mid-range phone.
-  // The additive column and floor pool carry the glow instead.
+  // No light column: additive columns summed into a white wall on the entry axis and hid the art.
+  // No real light either: a point light per beacon cost about 5x the frame time on a mid-range phone.
   return {
     anchor,
-    column,
     pool,
     setAccent(hex: string) {
-      const c = new THREE.Color(hex)
-      ;(columnMat as THREE.MeshBasicMaterial).color.copy(c)
-      ;(poolMat as THREE.MeshBasicMaterial).color.copy(c)
+      poolMat.color.set(hex)
     },
   }
 }
@@ -194,7 +174,7 @@ export function createJourneyField(scene: THREE.Scene, items: GalleryItem[], acc
     ribbons.push(ribbon)
 
     const beacon = createBeacon(anchor, accent)
-    group.add(beacon.column, beacon.pool)
+    group.add(beacon.pool)
     beacons.push(beacon)
   }
 
@@ -228,13 +208,12 @@ export function createJourneyField(scene: THREE.Scene, items: GalleryItem[], acc
         arr[i * 3 + 2] = p.z
       }
       ribbon.points.geometry.attributes.position.needsUpdate = true
-      ;(ribbon.points.material as THREE.PointsMaterial).opacity = 0.5 * revealT
+      ;(ribbon.points.material as THREE.PointsMaterial).opacity = 0.3 * revealT
     }
 
     for (const beacon of beacons) {
       const breathe = 0.82 + Math.sin(pulse * 0.9 + beacon.anchor.x) * 0.18
-      ;(beacon.column.material as THREE.MeshBasicMaterial).opacity = 0.07 * breathe * revealT
-      ;(beacon.pool.material as THREE.MeshBasicMaterial).opacity = 0.13 * breathe * revealT
+      ;(beacon.pool.material as THREE.MeshBasicMaterial).opacity = 0.09 * breathe * revealT
     }
 
     revealLight.intensity = 1.1 * revealT

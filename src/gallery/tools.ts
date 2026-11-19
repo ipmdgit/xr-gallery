@@ -33,12 +33,12 @@ export function createTools(opts: {
   const tourBtn = document.createElement('button')
   tourBtn.className = 'tool'
   tourBtn.textContent = 'TOUR'
-  tourBtn.title = 'Cinematic flythrough of every piece'
+  tourBtn.title = 'Guided walk through every room'
 
   const listBtn = document.createElement('button')
   listBtn.className = 'tool'
   listBtn.textContent = 'LIST'
-  listBtn.title = 'Browse all pieces'
+  listBtn.title = 'Browse every work, room by room'
 
   const feelBtn = document.createElement('button')
   feelBtn.className = 'tool feel'
@@ -55,7 +55,7 @@ export function createTools(opts: {
 
   const listTitle = document.createElement('div')
   listTitle.className = 'panel-title'
-  listTitle.textContent = 'Pieces'
+  listTitle.textContent = 'First Light — 58 works'
   listPanel.appendChild(listTitle)
 
   const list = document.createElement('div')
@@ -114,23 +114,38 @@ export function createTools(opts: {
   ) {
     list.textContent = ''
     rows.clear()
+    let room: number | undefined
     for (const item of items) {
+      if (item.type === 'artwork' && item.room !== room && item.roomLabel) {
+        room = item.room
+        const head = document.createElement('div')
+        head.className = 'list-room'
+        head.textContent = item.roomLabel
+        list.appendChild(head)
+      }
       const btn = document.createElement('button')
       btn.className = 'list-item'
       const dot = document.createElement('span')
       dot.className = 'list-dot'
       dot.setAttribute('aria-hidden', 'true')
-      if (item.type === 'artwork') {
+      if (item.type === 'artwork' && item.thumb) {
+        dot.classList.add('thumb')
+        dot.style.backgroundImage = `url("${item.thumb}")`
+      } else if (item.type === 'artwork' && item.colors) {
         dot.style.background = `linear-gradient(135deg, hsl(${item.colors[0]} 90% 55%), hsl(${item.colors[1]} 90% 65%))`
       } else {
         dot.style.background = 'linear-gradient(135deg, #6a6a78, #9a9aa8)'
       }
       const text = document.createElement('span')
-      text.textContent = `${item.title}`
+      text.className = 'list-text'
+      const name = document.createElement('span')
+      name.className = 'list-title'
+      name.textContent = item.type === 'artwork' && item.no != null ? `${item.no}. ${item.title}` : item.title
       const meta = document.createElement('span')
       meta.className = 'list-artist'
       meta.textContent = item.artist
-      btn.append(dot, text, meta)
+      text.append(name, meta)
+      btn.append(dot, text)
       btn.addEventListener('click', () => {
         onPick(item)
         // On a phone the open panel hides the piece you just picked.
@@ -144,6 +159,9 @@ export function createTools(opts: {
 
   function setActiveItem(id: string | null) {
     for (const [rowId, btn] of rows) btn.classList.toggle('active', rowId === id)
+    if (id && !listPanel.classList.contains('hidden')) {
+      rows.get(id)?.scrollIntoView({ block: 'nearest' })
+    }
   }
 
   return {
