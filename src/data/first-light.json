@@ -1,0 +1,704 @@
+{
+  "exhibition": "First Light",
+  "booklet": "Booklet v10, 2026-11-13",
+  "rooms": [
+    {
+      "number": 1,
+      "name": null,
+      "works": [
+        {
+          "id": "work-001",
+          "no": 1,
+          "title": "Nature",
+          "titleKo": "자연",
+          "student": "Juyoung Kim",
+          "completedBy": "Bae Soo-hyun with the help of AI",
+          "image": "art/first-light/001.jpg",
+          "thumb": "art/first-light/thumbs/001.jpg",
+          "aspect": 1.2503
+        },
+        {
+          "id": "work-002",
+          "no": 2,
+          "title": "Fish",
+          "titleKo": "물고기",
+          "student": "Hyemin Lee",
+          "completedBy": "Bae Soo-hyun with the help of AI",
+          "image": "art/first-light/002.jpg",
+          "thumb": "art/first-light/thumbs/002.jpg",
+          "aspect": 0.7998
+        },
+        {
+          "id": "work-003",
+          "no": 3,
+          "title": "Tree",
+          "titleKo": "나무",
+          "student": "Eundae Jung",
+          "completedBy": "Bae Soo-hyun with the help of AI",
+          "image": "art/first-light/003.jpg",
+          "thumb": "art/first-light/thumbs/003.jpg",
+          "aspect": 0.7998
+        },
+        {
+          "id": "work-004",
+          "no": 4,
+          "title": "Tree (after Jean-Michel Basquiat)",
+          "titleKo": "나무",
+          "student": "Jiwoo Jung",
+          "completedBy": "Min Lee with the help of AI",
+          "image": "art/first-light/004.jpg",
+          "thumb": "art/first-light/thumbs/004.jpg",
+          "aspect": 0.7998
+        },
+        {
+          "id": "work-005",
+          "no": 5,
+          "title": "Mixed Drawing",
+          "titleKo": "그림 믹스",
+          "student": "Hyundong Cho",
+          "completedBy": "Bae Soo-hyun with the help of AI",
+          "image": "art/first-light/005.jpg",
+          "thumb": "art/first-light/thumbs/005.jpg",
+          "aspect": 0.7998
+        },
+        {
+          "id": "work-006",
+          "no": 6,
+          "title": "Tree (after Jean Dubuffet)",
+          "titleKo": "나무",
+          "student": "Jiwon Gu",
+          "completedBy": "Min Lee with the help of AI",
+          "image": "art/first-light/006.jpg",
+          "thumb": "art/first-light/thumbs/006.jpg",
+          "aspect": 0.7998
+        },
+        {
+          "id": "work-007",
+          "no": 7,
+          "title": "Math",
+          "titleKo": "수학",
+          "student": "Seokje Cheon",
+          "completedBy": "Bae Soo-hyun with the help of AI",
+          "image": "art/first-light/007.jpg",
+          "thumb": "art/first-light/thumbs/007.jpg",
+          "aspect": 0.7998
+        },
+        {
+          "id": "work-008",
+          "no": 8,
+          "title": "The Sea",
+          "titleKo": "바다",
+          "student": "Hansol Choi",
+          "completedBy": "Bae Soo-hyun with the help of AI",
+          "image": "art/first-light/008.jpg",
+          "thumb": "art/first-light/thumbs/008.jpg",
+          "aspect": 0.7998
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "name": "Faces",
+      "works": [
+        {
+          "id": "work-009",
+          "no": 9,
+          "title": "Self Portrait",
+          "titleKo": null,
+          "student": "Juyoung Kim",
+          "completedBy": "Min Lee with the help of AI",
+          "image": "art/first-light/009.jpg",
+          "thumb": "art/first-light/thumbs/009.jpg",
+          "aspect": 1.134
+        },
+        {
+          "id": "work-010",
+          "no": 10,
+          "title": "Scribble",
+          "titleKo": "낙서",
+          "student": "Seokje Cheon",
+          "completedBy": "Min Lee with the help of AI",
+          "image": "art/first-light/010.jpg",
+          "thumb": "art/first-light/thumbs/010.jpg",
+          "aspect": 0.666
+        },
+        {
+          "id": "work-012",
+          "no": 12,
+          "title": "A Face That Endures",
+          "titleKo": null,
+          "student": "Eundae Jung",
+          "completedBy": "Bae Soo-hyun with the help of AI",
+          "image": "art/first-light/012.jpg",
+          "thumb": "art/first-light/thumbs/012.jpg",
+          "aspect": 0.666
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "name": "Heavenward",
+      "works": [
+        {
+          "id": "work-013",
+          "no": 13,
+          "title": "Angel Swing",
+          "titleKo": null,
+          "student": "Jiwoo Jung",
+          "completedBy": "Bae Soo-hyun with the help of AI",
+          "image": "art/first-light/013.jpg",
+          "thumb": "art/first-light/thumbs/013.jpg",
+          "aspect": 0.666
+        },
+        {
+          "id": "work-015",
+          "no": 15,
+          "title": "Boundaryless Embrace",
+          "titleKo": null,
+          "student": "Eundae Jung",
+          "completedBy": "Bae Soo-hyun with the help of AI",
+          "image": "art/first-light/015.jpg",
+          "thumb": "art/first-light/thumbs/015.jpg",
+          "aspect": 0.666
+        },
+        {
+          "id": "work-016",
+          "no": 16,
+          "title": "Eundae's Tower of Babel",
+          "titleKo": null,
+          "student": "Eundae Jung",
+          "completedBy": "Bae Soo-hyun with the help of AI",
+          "image": "art/first-light/016.jpg",
+          "thumb": "art/first-light/thumbs/016.jpg",
+          "aspect": 0.666
+        },
+        {
+          "id": "work-018",
+          "no": 18,
+          "title": "Exploding Joy 2",
+          "titleKo": null,
+          "student": "Hyemin Lee",
+          "completedBy": "Bae Soo-hyun with the help of AI",
+          "image": "art/first-light/018.jpg",
+          "thumb": "art/first-light/thumbs/018.jpg",
+          "aspect": 0.7295
+        },
+        {
+          "id": "work-019",
+          "no": 19,
+          "title": "I'm Eundae",
+          "titleKo": "I'm 은대",
+          "student": "Eundae Jung",
+          "completedBy": "Bae Soo-hyun with the help of AI",
+          "image": "art/first-light/019.jpg",
+          "thumb": "art/first-light/thumbs/019.jpg",
+          "aspect": 0.666
+        },
+        {
+          "id": "work-020",
+          "no": 20,
+          "title": "It's Okay, Just As You Are",
+          "titleKo": null,
+          "student": "Sokcho Welfare Center student",
+          "completedBy": "Bae Soo-hyun with the help of AI",
+          "image": "art/first-light/020.jpg",
+          "thumb": "art/first-light/thumbs/020.jpg",
+          "aspect": 0.666
+        },
+        {
+          "id": "work-021",
+          "no": 21,
+          "title": "Joy Before Words 1",
+          "titleKo": null,
+          "student": "Hyemin Lee",
+          "completedBy": "Bae Soo-hyun with the help of AI",
+          "image": "art/first-light/021.jpg",
+          "thumb": "art/first-light/thumbs/021.jpg",
+          "aspect": 0.666
+        }
+      ]
+    },
+    {
+      "number": 4,
+      "name": "Manna & Babel",
+      "works": [
+        {
+          "id": "work-023",
+          "no": 23,
+          "title": "Manna",
+          "titleKo": null,
+          "student": "Sokcho Welfare Center student",
+          "completedBy": "Min Lee with the help of AI",
+          "image": "art/first-light/023.jpg",
+          "thumb": "art/first-light/thumbs/023.jpg",
+          "aspect": 0.666
+        },
+        {
+          "id": "work-024",
+          "no": 24,
+          "title": "Rendezvous of Unreachable Hearts",
+          "titleKo": null,
+          "student": "Jiwoo Jung",
+          "completedBy": "Bae Soo-hyun with the help of AI",
+          "image": "art/first-light/024.jpg",
+          "thumb": "art/first-light/thumbs/024.jpg",
+          "aspect": 0.666
+        },
+        {
+          "id": "work-025",
+          "no": 25,
+          "title": "The Babel Tower Rebuilt in Dialects (1)",
+          "titleKo": null,
+          "student": "Jiwoo Jung",
+          "completedBy": "Bae Soo-hyun with the help of AI",
+          "image": "art/first-light/025.jpg",
+          "thumb": "art/first-light/thumbs/025.jpg",
+          "aspect": 0.7295
+        }
+      ]
+    },
+    {
+      "number": 5,
+      "name": "Garden",
+      "works": [
+        {
+          "id": "work-029",
+          "no": 29,
+          "title": "Bouquet in a Purple Pot",
+          "titleKo": null,
+          "student": "Sokcho Welfare Center student",
+          "completedBy": "Alysia Kim with the help of AI",
+          "image": "art/first-light/029.jpg",
+          "thumb": "art/first-light/thumbs/029.jpg",
+          "aspect": 0.7539
+        },
+        {
+          "id": "work-030",
+          "no": 30,
+          "title": "Three Purple Flowers in a Spotted Pot",
+          "titleKo": null,
+          "student": "Sokcho Welfare Center student",
+          "completedBy": "Alysia Kim with the help of AI",
+          "image": "art/first-light/030.jpg",
+          "thumb": "art/first-light/thumbs/030.jpg",
+          "aspect": 1.3264
+        },
+        {
+          "id": "work-031",
+          "no": 31,
+          "title": "Embrace in Red",
+          "titleKo": null,
+          "student": "Sokcho Welfare Center student",
+          "completedBy": "Min Lee with the help of AI",
+          "image": "art/first-light/031.jpg",
+          "thumb": "art/first-light/thumbs/031.jpg",
+          "aspect": 1.3264
+        },
+        {
+          "id": "work-032",
+          "no": 32,
+          "title": "Six Smiling Flowers",
+          "titleKo": null,
+          "student": "Sokcho Welfare Center student",
+          "completedBy": "Alysia Kim with the help of AI",
+          "image": "art/first-light/032.jpg",
+          "thumb": "art/first-light/thumbs/032.jpg",
+          "aspect": 0.7539
+        },
+        {
+          "id": "work-033",
+          "no": 33,
+          "title": "Red Paper Collage",
+          "titleKo": null,
+          "student": "Sokcho Welfare Center student",
+          "completedBy": "Gongju & Min Lee with the help of AI",
+          "image": "art/first-light/033.jpg",
+          "thumb": "art/first-light/thumbs/033.jpg",
+          "aspect": 1.3264
+        },
+        {
+          "id": "work-035",
+          "no": 35,
+          "title": "Paper and Crayon Bouquet",
+          "titleKo": null,
+          "student": "Sokcho Welfare Center student",
+          "completedBy": "Min Lee with the help of AI",
+          "image": "art/first-light/035.jpg",
+          "thumb": "art/first-light/thumbs/035.jpg",
+          "aspect": 0.75
+        }
+      ]
+    },
+    {
+      "number": 6,
+      "name": "Faces, Skies & Light",
+      "works": [
+        {
+          "id": "work-037",
+          "no": 37,
+          "title": "Two Faces, Rainbow Hair",
+          "titleKo": null,
+          "student": "Sokcho Welfare Center student",
+          "completedBy": "Alysia Kim with the help of AI",
+          "image": "art/first-light/037.jpg",
+          "thumb": "art/first-light/thumbs/037.jpg",
+          "aspect": 0.7305
+        },
+        {
+          "id": "work-038",
+          "no": 38,
+          "title": "The Night Sky, Pieced Together",
+          "titleKo": null,
+          "student": "Sokcho Welfare Center student",
+          "completedBy": "Alysia Kim with the help of AI",
+          "image": "art/first-light/038.jpg",
+          "thumb": "art/first-light/thumbs/038.jpg",
+          "aspect": 1.3333
+        },
+        {
+          "id": "work-039",
+          "no": 39,
+          "title": "The Cartography of Connected Cranes",
+          "titleKo": null,
+          "student": "Sokcho Welfare Center student",
+          "completedBy": "Alysia Kim with the help of AI",
+          "image": "art/first-light/039.jpg",
+          "thumb": "art/first-light/thumbs/039.jpg",
+          "aspect": 1.3213
+        },
+        {
+          "id": "work-050",
+          "no": 50,
+          "title": "Waves of Light",
+          "titleKo": null,
+          "student": "Sokcho Welfare Center student",
+          "completedBy": "Min Lee with the help of AI",
+          "image": "art/first-light/050.jpg",
+          "thumb": "art/first-light/thumbs/050.jpg",
+          "aspect": 1.5015
+        }
+      ]
+    },
+    {
+      "number": 7,
+      "name": "Living World",
+      "works": [
+        {
+          "id": "work-061",
+          "no": 61,
+          "title": "The Coral Creature",
+          "titleKo": null,
+          "student": "Sokcho Welfare Center student",
+          "completedBy": "Scott Alexander with the help of AI",
+          "image": "art/first-light/061.jpg",
+          "thumb": "art/first-light/thumbs/061.jpg",
+          "aspect": 1.3403
+        },
+        {
+          "id": "work-063",
+          "no": 63,
+          "title": "The Stained-Glass Butterfly",
+          "titleKo": null,
+          "student": "Sokcho Welfare Center student",
+          "completedBy": "Alysia Kim with the help of AI",
+          "image": "art/first-light/063.jpg",
+          "thumb": "art/first-light/thumbs/063.jpg",
+          "aspect": 1.3213
+        },
+        {
+          "id": "work-069",
+          "no": 69,
+          "title": "The Castle Across the Water",
+          "titleKo": null,
+          "student": "Sokcho Welfare Center student",
+          "completedBy": "Min Lee with the help of AI",
+          "image": "art/first-light/069.jpg",
+          "thumb": "art/first-light/thumbs/069.jpg",
+          "aspect": 1.2075
+        },
+        {
+          "id": "work-070",
+          "no": 70,
+          "title": "The Sea in Pieces",
+          "titleKo": null,
+          "student": "Sokcho Welfare Center student",
+          "completedBy": "Alysia Kim with the help of AI",
+          "image": "art/first-light/070.jpg",
+          "thumb": "art/first-light/thumbs/070.jpg",
+          "aspect": 1.3456
+        },
+        {
+          "id": "work-071",
+          "no": 71,
+          "title": "The Painted Beetle",
+          "titleKo": null,
+          "student": "Sokcho Welfare Center student",
+          "completedBy": "Alysia Kim with the help of AI",
+          "image": "art/first-light/071.jpg",
+          "thumb": "art/first-light/thumbs/071.jpg",
+          "aspect": 0.7402
+        },
+        {
+          "id": "work-073",
+          "no": 73,
+          "title": "Golden Butterfly",
+          "titleKo": null,
+          "student": "Sokcho Welfare Center student",
+          "completedBy": "Alysia Kim with the help of AI",
+          "image": "art/first-light/073.jpg",
+          "thumb": "art/first-light/thumbs/073.jpg",
+          "aspect": 1.3213
+        },
+        {
+          "id": "work-074",
+          "no": 74,
+          "title": "The Lungs in Bloom",
+          "titleKo": null,
+          "student": "Sokcho Welfare Center student",
+          "completedBy": "Alysia Kim with the help of AI",
+          "image": "art/first-light/074.jpg",
+          "thumb": "art/first-light/thumbs/074.jpg",
+          "aspect": 1.0
+        },
+        {
+          "id": "work-077",
+          "no": 77,
+          "title": "Sunset over the Mountains",
+          "titleKo": null,
+          "student": "Sokcho Welfare Center student",
+          "completedBy": "Alysia Kim with the help of AI",
+          "image": "art/first-light/077.jpg",
+          "thumb": "art/first-light/thumbs/077.jpg",
+          "aspect": 1.3128
+        }
+      ]
+    },
+    {
+      "number": 8,
+      "name": "Bible & Angels",
+      "works": [
+        {
+          "id": "work-082",
+          "no": 82,
+          "title": "Grace Descending on the Last Breath in the Wilderness",
+          "titleKo": "광야의 마지막 숨결 위에 내린 은혜",
+          "student": "Sokcho Welfare Center student",
+          "completedBy": "Min Lee with the help of AI",
+          "image": "art/first-light/082.jpg",
+          "thumb": "art/first-light/thumbs/082.jpg",
+          "aspect": 1.7716
+        },
+        {
+          "id": "work-083",
+          "no": 83,
+          "title": "Camels, Sea, War",
+          "titleKo": "낙타 바다 전쟁",
+          "student": "Sokcho Welfare Center student",
+          "completedBy": "Min Lee with the help of AI",
+          "image": "art/first-light/083.jpg",
+          "thumb": "art/first-light/thumbs/083.jpg",
+          "aspect": 0.7334
+        },
+        {
+          "id": "work-084",
+          "no": 84,
+          "title": "Noah's Ark",
+          "titleKo": "노아의 방주",
+          "student": "Sokcho Welfare Center student",
+          "completedBy": "Min Lee with the help of AI",
+          "image": "art/first-light/084.jpg",
+          "thumb": "art/first-light/thumbs/084.jpg",
+          "aspect": 0.666
+        },
+        {
+          "id": "work-085",
+          "no": 85,
+          "title": "Noah's Ark",
+          "titleKo": "노아의 방주",
+          "student": "Sokcho Welfare Center student",
+          "completedBy": "Min Lee with the help of AI",
+          "image": "art/first-light/085.jpg",
+          "thumb": "art/first-light/thumbs/085.jpg",
+          "aspect": 0.666
+        },
+        {
+          "id": "work-086",
+          "no": 86,
+          "title": "The Tower of Babel",
+          "titleKo": "바벨탑",
+          "student": "Jiwoo Jung",
+          "completedBy": "Gongju & Min Lee with the help of AI",
+          "image": "art/first-light/086.jpg",
+          "thumb": "art/first-light/thumbs/086.jpg",
+          "aspect": 0.7539
+        },
+        {
+          "id": "work-087",
+          "no": 87,
+          "title": "Flames and the Staff",
+          "titleKo": "불꽃과 오선지",
+          "student": "Sokcho Welfare Center student",
+          "completedBy": "Min Lee with the help of AI",
+          "image": "art/first-light/087.jpg",
+          "thumb": "art/first-light/thumbs/087.jpg",
+          "aspect": 0.666
+        },
+        {
+          "id": "work-088",
+          "no": 88,
+          "title": "Abraham",
+          "titleKo": "아브라함",
+          "student": "Eundae Jung",
+          "completedBy": "Gongju & Min Lee with the help of AI",
+          "image": "art/first-light/088.jpg",
+          "thumb": "art/first-light/thumbs/088.jpg",
+          "aspect": 0.7539
+        },
+        {
+          "id": "work-089",
+          "no": 89,
+          "title": "Jacob and Esau's Reconciliation",
+          "titleKo": "야곱과 에서의 화해",
+          "student": "Sokcho Welfare Center student",
+          "completedBy": "Min Lee with the help of AI",
+          "image": "art/first-light/089.jpg",
+          "thumb": "art/first-light/thumbs/089.jpg",
+          "aspect": 1.8318
+        },
+        {
+          "id": "work-090",
+          "no": 90,
+          "title": "The Tears of Jesus",
+          "titleKo": "예수의 눈물",
+          "student": "Hyundong Cho",
+          "completedBy": "Min Lee with the help of AI",
+          "image": "art/first-light/090.jpg",
+          "thumb": "art/first-light/thumbs/090.jpg",
+          "aspect": 0.666
+        },
+        {
+          "id": "work-091",
+          "no": 91,
+          "title": "Joy",
+          "titleKo": "재미",
+          "student": "Hyemin Lee",
+          "completedBy": "Gongju & Min Lee with the help of AI",
+          "image": "art/first-light/091.jpg",
+          "thumb": "art/first-light/thumbs/091.jpg",
+          "aspect": 0.7539
+        },
+        {
+          "id": "work-093",
+          "no": 93,
+          "title": "Angel",
+          "titleKo": "천사",
+          "student": "Jiwoo Jung",
+          "completedBy": "Gongju & Min Lee with the help of AI",
+          "image": "art/first-light/093.jpg",
+          "thumb": "art/first-light/thumbs/093.jpg",
+          "aspect": 0.7539
+        },
+        {
+          "id": "work-094",
+          "no": 94,
+          "title": "Angel",
+          "titleKo": "천사",
+          "student": "Eundae Jung",
+          "completedBy": "Gongju & Min Lee with the help of AI",
+          "image": "art/first-light/094.jpg",
+          "thumb": "art/first-light/thumbs/094.jpg",
+          "aspect": 0.7539
+        },
+        {
+          "id": "work-095",
+          "no": 95,
+          "title": "Celestial Menagerie",
+          "titleKo": "천상의 동물원",
+          "student": "Seokje Cheon",
+          "completedBy": "Min Lee with the help of AI",
+          "image": "art/first-light/095.jpg",
+          "thumb": "art/first-light/thumbs/095.jpg",
+          "aspect": 0.666
+        },
+        {
+          "id": "work-096",
+          "no": 96,
+          "title": "Garden of Eden",
+          "titleKo": "에덴동산",
+          "student": "Sokcho Welfare Center student",
+          "completedBy": "Min Lee with the help of AI",
+          "image": "art/first-light/096.jpg",
+          "thumb": "art/first-light/thumbs/096.jpg",
+          "aspect": 0.7295
+        }
+      ]
+    },
+    {
+      "number": 9,
+      "name": "Leaves & Quiet Forest",
+      "works": [
+        {
+          "id": "work-097",
+          "no": 97,
+          "title": "Leaf Birds",
+          "titleKo": "나뭇잎 새",
+          "student": "Sokcho Welfare Center student",
+          "completedBy": "Alysia Kim with the help of AI",
+          "image": "art/first-light/097.jpg",
+          "thumb": "art/first-light/thumbs/097.jpg",
+          "aspect": 1.3351
+        },
+        {
+          "id": "work-098",
+          "no": 98,
+          "title": "Leaves on the Pond",
+          "titleKo": "연못 위의 잎사귀",
+          "student": "Sokcho Welfare Center student",
+          "completedBy": "Alysia Kim with the help of AI",
+          "image": "art/first-light/098.jpg",
+          "thumb": "art/first-light/thumbs/098.jpg",
+          "aspect": 1.3351
+        },
+        {
+          "id": "work-099",
+          "no": 99,
+          "title": "The Purple Cottage",
+          "titleKo": "보라 오두막",
+          "student": "Sokcho Welfare Center student",
+          "completedBy": "Alysia Kim with the help of AI",
+          "image": "art/first-light/099.jpg",
+          "thumb": "art/first-light/thumbs/099.jpg",
+          "aspect": 1.3333
+        },
+        {
+          "id": "work-100",
+          "no": 100,
+          "title": "Orange Bunny",
+          "titleKo": "주황 토끼",
+          "student": "Sokcho Welfare Center student",
+          "completedBy": "Min Lee with the help of AI",
+          "image": "art/first-light/100.jpg",
+          "thumb": "art/first-light/thumbs/100.jpg",
+          "aspect": 1.3264
+        }
+      ]
+    },
+    {
+      "number": 10,
+      "name": null,
+      "works": [
+        {
+          "id": "work-101",
+          "no": 101,
+          "title": "The World As I See It",
+          "titleKo": "내가 보는 세상",
+          "student": "Jung Joon Ui",
+          "completedBy": null,
+          "image": "art/first-light/101.jpg",
+          "thumb": "art/first-light/thumbs/101.jpg",
+          "aspect": 1.2503
+        }
+      ]
+    }
+  ]
+}

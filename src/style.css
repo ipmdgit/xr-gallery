@@ -630,6 +630,336 @@ button.vr {
   }
 }
 
+/* ---- First Light hall ------------------------------------------------------------------ */
+
+#room-bar {
+  position: fixed;
+  top: 56px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px;
+  color: #e7e6ea;
+  background: rgba(20, 20, 28, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+
+  .room-step {
+    width: 40px;
+    height: 40px;
+    flex: none;
+    font: 400 26px/1 Georgia, serif;
+    color: #fff;
+    background: transparent;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background 0.2s;
+
+    &:hover:not(:disabled) {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    &:disabled {
+      opacity: 0.25;
+      cursor: default;
+    }
+  }
+
+  .room-info {
+    min-width: 220px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    padding: 2px 6px;
+  }
+
+  .room-num {
+    font: 600 10px/1 system-ui, 'Segoe UI', Roboto, sans-serif;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  .room-name {
+    font: italic 400 19px/1.1 Georgia, serif;
+    color: #fff;
+    white-space: nowrap;
+  }
+
+  .room-dots {
+    display: flex;
+    gap: 2px;
+  }
+
+  .room-dot {
+    width: 16px;
+    height: 14px;
+    padding: 0;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+
+    &::after {
+      content: '';
+      display: block;
+      width: 6px;
+      height: 6px;
+      margin: 4px auto;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.28);
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    &:hover::after {
+      background: rgba(255, 255, 255, 0.7);
+    }
+
+    &.current::after {
+      background: var(--accent, #f5b942);
+      transform: scale(1.35);
+    }
+  }
+}
+
+#room-fade {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: #050507;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.38s ease;
+
+  &.on {
+    opacity: 1;
+  }
+}
+
+/* The wall label: paper card, like the printed labels in the physical show. */
+#plaque {
+  --accent: #f5b942;
+  position: fixed;
+  left: 24px;
+  bottom: 72px;
+  z-index: 35;
+  width: 340px;
+  box-sizing: border-box;
+  padding: 22px 24px 16px;
+  color: #1f1c18;
+  background: #f5f1e8;
+  border-radius: 4px;
+  border-left: 4px solid var(--accent);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+  opacity: 0;
+  transform: translateY(12px);
+  visibility: hidden;
+  transition: opacity 0.35s ease, transform 0.35s ease, visibility 0.35s;
+
+  &.open {
+    opacity: 1;
+    transform: none;
+    visibility: visible;
+  }
+
+  .plaque-kicker {
+    font: 600 10px/1.4 system-ui, 'Segoe UI', Roboto, sans-serif;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    color: #7a7266;
+    padding-right: 24px;
+  }
+
+  .plaque-title {
+    margin: 8px 0 0;
+    font: 400 25px/1.2 Georgia, 'Times New Roman', serif;
+    color: #15130f;
+  }
+
+  .plaque-title-ko {
+    margin-top: 4px;
+    font: 400 15px/1.4 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+    color: #5d564c;
+  }
+
+  .plaque-rule {
+    width: 36px;
+    height: 2px;
+    margin: 14px 0 12px;
+    background: var(--accent);
+  }
+
+  .plaque-credits {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 5px 14px;
+    margin: 0;
+    font: 400 13px/1.45 system-ui, 'Segoe UI', Roboto, sans-serif;
+
+    dt {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: #8a8276;
+      padding-top: 2px;
+    }
+
+    dd {
+      margin: 0;
+      color: #2a261f;
+    }
+  }
+
+  .plaque-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 14px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(31, 28, 24, 0.12);
+  }
+
+  .plaque-btn {
+    width: 36px;
+    height: 32px;
+    font: 400 22px/1 Georgia, serif;
+    color: #1f1c18;
+    background: transparent;
+    border: 1px solid rgba(31, 28, 24, 0.18);
+    border-radius: 6px;
+    cursor: pointer;
+
+    &:hover {
+      background: rgba(31, 28, 24, 0.07);
+    }
+  }
+
+  .plaque-count {
+    font: 500 11px/1 system-ui, 'Segoe UI', Roboto, sans-serif;
+    letter-spacing: 1.5px;
+    color: #8a8276;
+  }
+
+  .plaque-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 30px;
+    height: 30px;
+    font: 300 22px/1 system-ui, sans-serif;
+    color: #7a7266;
+    background: transparent;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+
+    &:hover {
+      background: rgba(31, 28, 24, 0.08);
+    }
+  }
+
+  button:focus-visible {
+    outline: 2px solid #1f1c18;
+    box-shadow: none;
+  }
+}
+
+#list-panel {
+  width: 320px;
+
+  .list-room {
+    margin: 14px 4px 4px;
+    font: 600 10px/1.3 system-ui, 'Segoe UI', Roboto, sans-serif;
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+    color: #8a8794;
+
+    &:first-of-type {
+      margin-top: 2px;
+    }
+  }
+
+  .list-item {
+    padding: 6px 8px;
+
+    .list-dot.thumb {
+      width: 40px;
+      height: 40px;
+      border-radius: 5px;
+      background-size: cover;
+      background-position: center;
+      border-color: rgba(255, 255, 255, 0.12);
+    }
+
+    .list-text {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .list-title {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .list-artist {
+      margin-left: 0;
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  #room-bar {
+    top: 100px;
+    padding: 4px;
+
+    .room-step {
+      width: 36px;
+      height: 36px;
+    }
+
+    .room-info {
+      min-width: 0;
+      max-width: 62vw;
+    }
+
+    .room-name {
+      font-size: 16px;
+      max-width: 62vw;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  #plaque {
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    width: auto;
+    max-height: 46dvh;
+    overflow-y: auto;
+    padding: 16px 18px 12px;
+
+    .plaque-title {
+      font-size: 21px;
+    }
+  }
+
+  #list-panel {
+    width: auto;
+    left: 12px;
+    right: 12px;
+  }
+}
+
 body.photo-mode .ui {
   visibility: hidden;
 }
