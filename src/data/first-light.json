@@ -4,7 +4,7 @@
   "rooms": [
     {
       "number": 1,
-      "name": null,
+      "name": "First Light",
       "works": [
         {
           "id": "work-001",
@@ -685,7 +685,7 @@
     },
     {
       "number": 10,
-      "name": null,
+      "name": "As I See It",
       "works": [
         {
           "id": "work-101",
@@ -694,6 +694,7 @@
           "titleKo": "내가 보는 세상",
           "student": "Jung Joon Ui",
           "completedBy": null,
+          "original": true,
           "image": "art/first-light/101.jpg",
           "thumb": "art/first-light/thumbs/101.jpg",
           "aspect": 1.2503

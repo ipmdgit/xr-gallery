@@ -214,5 +214,6 @@ URL yet** — it needs review and a Pages redeploy.
 - Small stuff from 2.6: `THREE.Clock` → `THREE.Timer` (warning gone), `&rdquoi>` typo fixed, favicon added.
   `fix/phone-header-layout` is merged into the branch.
 
-**Open questions for Gongju / Min:** Rooms 1 and 10 have no names in the list (shown as "Room 1" / "Room 10");
-#101 has no completed-by credit (label shows the student only). Both are easy to change once confirmed.
+**Resolved (19 Nov):** Min approved the room names: Room 1 is "First Light" (the free-preview entrance) and
+Room 10 is "As I See It" (from #101's title). #101 has no completed-by credit by design: it is the one work shown
+exactly as the participant made it, so its label reads "Original work by Jung Joon Ui".
