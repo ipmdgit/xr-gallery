@@ -14,6 +14,8 @@ export interface Work {
   titleKo: string | null
   student: string
   completedBy: string | null
+  /** Shown exactly as the participant made it, with no AI completion (#101). */
+  original?: boolean
   image: string
   thumb: string
   aspect: number
@@ -101,7 +103,12 @@ export function layoutRoom(room: Room): ArtworkConfig[] {
       artist: w.student,
       student: w.student,
       completedBy: w.completedBy,
-      description: w.completedBy ? `Completed by ${w.completedBy}` : '',
+      original: w.original === true,
+      description: w.original
+        ? `Original work by ${w.student}`
+        : w.completedBy
+          ? `Completed by ${w.completedBy}`
+          : '',
       no: w.no,
       image: w.image,
       thumb: w.thumb,

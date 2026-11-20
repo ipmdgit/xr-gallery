@@ -79,8 +79,12 @@ export function createPlaque(opts: {
       titleKo.textContent = config.titleKo ?? ''
       titleKo.hidden = !config.titleKo
       credits.textContent = ''
-      row('Student', config.student ?? config.artist)
-      if (config.completedBy) row('Completed by', config.completedBy)
+      if (config.original) {
+        row('Original work by', config.student ?? config.artist)
+      } else {
+        row('Student', config.student ?? config.artist)
+        if (config.completedBy) row('Completed by', config.completedBy)
+      }
       count.textContent = `${pos.index + 1} / ${pos.total}`
       el.classList.add('open')
       open = true

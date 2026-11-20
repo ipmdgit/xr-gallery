@@ -23,6 +23,8 @@ export interface ArtworkConfig {
   titleKo?: string | null
   student?: string
   completedBy?: string | null
+  /** True for a work shown exactly as the participant made it, with no AI completion. */
+  original?: boolean
   thumb?: string
   room?: number
   roomLabel?: string
