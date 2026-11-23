@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { addGlow } from './glow.ts'
+import { artTexture } from './textureCache.ts'
 
 export interface ArtworkConfig {
   id: string
@@ -105,7 +106,7 @@ export async function createArtwork(config: ArtworkConfig): Promise<THREE.Group>
   const h = config.height ?? 1.5
   const [c0, c1] = config.colors ?? [220, 260]
   const fallback = makeCanvasTexture(config.title, c0, c1)
-  const texture = config.image ? await loadTexture(config.image, fallback) : fallback
+  const texture = config.image ? await artTexture(config, () => loadTexture(config.image!, fallback)) : fallback
   texture.anisotropy = 4
 
   const group = new THREE.Group()
