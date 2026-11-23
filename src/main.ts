@@ -28,6 +28,7 @@ import { updateGlows } from './gallery/glow.ts'
 import { createTools, type ToolUI } from './gallery/tools.ts'
 import type { ThemeTargets } from './gallery/themes.ts'
 import { createSoundscape } from './gallery/sound.ts'
+import { installTextureCache } from './gallery/textureCache.ts'
 import { createMoodModal, moodById } from './gallery/mood.ts'
 import { createWisps } from './gallery/wisps.ts'
 import { createJourneyField } from './gallery/journey.ts'
@@ -103,6 +104,7 @@ const camera = new THREE.PerspectiveCamera(
   1000,
 )
 camera.position.set(0, 1.75, 6.6)
+installTextureCache(renderer, scene, camera)
 
 const controls = new OrbitControls(camera, renderer.domElement)
 controls.enableDamping = true
