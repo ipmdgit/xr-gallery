@@ -1,0 +1,820 @@
+{
+  "wallLongEdge": 1024,
+  "thumbLongEdge": 320,
+  "count": 58,
+  "totalBytes": 11205462,
+  "works": [
+    {
+      "no": 1,
+      "path": "artwork/001.webp",
+      "width": 1024,
+      "height": 819,
+      "bytes": 247630,
+      "thumb": {
+        "path": "artwork/001-thumb.webp",
+        "width": 320,
+        "height": 256,
+        "bytes": 19640
+      },
+      "sourceBytes": 338456
+    },
+    {
+      "no": 2,
+      "path": "artwork/002.webp",
+      "width": 819,
+      "height": 1024,
+      "bytes": 111316,
+      "thumb": {
+        "path": "artwork/002-thumb.webp",
+        "width": 256,
+        "height": 320,
+        "bytes": 7770
+      },
+      "sourceBytes": 191297
+    },
+    {
+      "no": 3,
+      "path": "artwork/003.webp",
+      "width": 819,
+      "height": 1024,
+      "bytes": 137698,
+      "thumb": {
+        "path": "artwork/003-thumb.webp",
+        "width": 256,
+        "height": 320,
+        "bytes": 11988
+      },
+      "sourceBytes": 231382
+    },
+    {
+      "no": 4,
+      "path": "artwork/004.webp",
+      "width": 819,
+      "height": 1024,
+      "bytes": 294468,
+      "thumb": {
+        "path": "artwork/004-thumb.webp",
+        "width": 256,
+        "height": 320,
+        "bytes": 18354
+      },
+      "sourceBytes": 389378
+    },
+    {
+      "no": 5,
+      "path": "artwork/005.webp",
+      "width": 819,
+      "height": 1024,
+      "bytes": 179190,
+      "thumb": {
+        "path": "artwork/005-thumb.webp",
+        "width": 256,
+        "height": 320,
+        "bytes": 15458
+      },
+      "sourceBytes": 282153
+    },
+    {
+      "no": 6,
+      "path": "artwork/006.webp",
+      "width": 819,
+      "height": 1024,
+      "bytes": 161090,
+      "thumb": {
+        "path": "artwork/006-thumb.webp",
+        "width": 256,
+        "height": 320,
+        "bytes": 14408
+      },
+      "sourceBytes": 265295
+    },
+    {
+      "no": 7,
+      "path": "artwork/007.webp",
+      "width": 819,
+      "height": 1024,
+      "bytes": 175484,
+      "thumb": {
+        "path": "artwork/007-thumb.webp",
+        "width": 256,
+        "height": 320,
+        "bytes": 15326
+      },
+      "sourceBytes": 267613
+    },
+    {
+      "no": 8,
+      "path": "artwork/008.webp",
+      "width": 819,
+      "height": 1024,
+      "bytes": 232422,
+      "thumb": {
+        "path": "artwork/008-thumb.webp",
+        "width": 256,
+        "height": 320,
+        "bytes": 19602
+      },
+      "sourceBytes": 334215
+    },
+    {
+      "no": 9,
+      "path": "artwork/009.webp",
+      "width": 1024,
+      "height": 903,
+      "bytes": 55820,
+      "thumb": {
+        "path": "artwork/009-thumb.webp",
+        "width": 320,
+        "height": 282,
+        "bytes": 4402
+      },
+      "sourceBytes": 116741
+    },
+    {
+      "no": 10,
+      "path": "artwork/010.webp",
+      "width": 682,
+      "height": 1024,
+      "bytes": 264264,
+      "thumb": {
+        "path": "artwork/010-thumb.webp",
+        "width": 213,
+        "height": 320,
+        "bytes": 17754
+      },
+      "sourceBytes": 350133
+    },
+    {
+      "no": 12,
+      "path": "artwork/012.webp",
+      "width": 682,
+      "height": 1024,
+      "bytes": 127124,
+      "thumb": {
+        "path": "artwork/012-thumb.webp",
+        "width": 213,
+        "height": 320,
+        "bytes": 7218
+      },
+      "sourceBytes": 201616
+    },
+    {
+      "no": 13,
+      "path": "artwork/013.webp",
+      "width": 682,
+      "height": 1024,
+      "bytes": 324896,
+      "thumb": {
+        "path": "artwork/013-thumb.webp",
+        "width": 213,
+        "height": 320,
+        "bytes": 18214
+      },
+      "sourceBytes": 410885
+    },
+    {
+      "no": 15,
+      "path": "artwork/015.webp",
+      "width": 682,
+      "height": 1024,
+      "bytes": 144368,
+      "thumb": {
+        "path": "artwork/015-thumb.webp",
+        "width": 213,
+        "height": 320,
+        "bytes": 7908
+      },
+      "sourceBytes": 221837
+    },
+    {
+      "no": 16,
+      "path": "artwork/016.webp",
+      "width": 682,
+      "height": 1024,
+      "bytes": 198536,
+      "thumb": {
+        "path": "artwork/016-thumb.webp",
+        "width": 213,
+        "height": 320,
+        "bytes": 9654
+      },
+      "sourceBytes": 271273
+    },
+    {
+      "no": 18,
+      "path": "artwork/018.webp",
+      "width": 747,
+      "height": 1024,
+      "bytes": 165852,
+      "thumb": {
+        "path": "artwork/018-thumb.webp",
+        "width": 233,
+        "height": 320,
+        "bytes": 11278
+      },
+      "sourceBytes": 246875
+    },
+    {
+      "no": 19,
+      "path": "artwork/019.webp",
+      "width": 682,
+      "height": 1024,
+      "bytes": 209534,
+      "thumb": {
+        "path": "artwork/019-thumb.webp",
+        "width": 213,
+        "height": 320,
+        "bytes": 13946
+      },
+      "sourceBytes": 288909
+    },
+    {
+      "no": 20,
+      "path": "artwork/020.webp",
+      "width": 682,
+      "height": 1024,
+      "bytes": 153198,
+      "thumb": {
+        "path": "artwork/020-thumb.webp",
+        "width": 213,
+        "height": 320,
+        "bytes": 7898
+      },
+      "sourceBytes": 228373
+    },
+    {
+      "no": 21,
+      "path": "artwork/021.webp",
+      "width": 682,
+      "height": 1024,
+      "bytes": 269794,
+      "thumb": {
+        "path": "artwork/021-thumb.webp",
+        "width": 213,
+        "height": 320,
+        "bytes": 19988
+      },
+      "sourceBytes": 370721
+    },
+    {
+      "no": 23,
+      "path": "artwork/023.webp",
+      "width": 682,
+      "height": 1024,
+      "bytes": 126508,
+      "thumb": {
+        "path": "artwork/023-thumb.webp",
+        "width": 213,
+        "height": 320,
+        "bytes": 8122
+      },
+      "sourceBytes": 204792
+    },
+    {
+      "no": 24,
+      "path": "artwork/024.webp",
+      "width": 682,
+      "height": 1024,
+      "bytes": 209166,
+      "thumb": {
+        "path": "artwork/024-thumb.webp",
+        "width": 213,
+        "height": 320,
+        "bytes": 14250
+      },
+      "sourceBytes": 288968
+    },
+    {
+      "no": 25,
+      "path": "artwork/025.webp",
+      "width": 747,
+      "height": 1024,
+      "bytes": 194340,
+      "thumb": {
+        "path": "artwork/025-thumb.webp",
+        "width": 233,
+        "height": 320,
+        "bytes": 15376
+      },
+      "sourceBytes": 286321
+    },
+    {
+      "no": 29,
+      "path": "artwork/029.webp",
+      "width": 772,
+      "height": 1024,
+      "bytes": 135480,
+      "thumb": {
+        "path": "artwork/029-thumb.webp",
+        "width": 241,
+        "height": 320,
+        "bytes": 10460
+      },
+      "sourceBytes": 225012
+    },
+    {
+      "no": 30,
+      "path": "artwork/030.webp",
+      "width": 1024,
+      "height": 772,
+      "bytes": 79898,
+      "thumb": {
+        "path": "artwork/030-thumb.webp",
+        "width": 320,
+        "height": 241,
+        "bytes": 7732
+      },
+      "sourceBytes": 159272
+    },
+    {
+      "no": 31,
+      "path": "artwork/031.webp",
+      "width": 1024,
+      "height": 772,
+      "bytes": 172396,
+      "thumb": {
+        "path": "artwork/031-thumb.webp",
+        "width": 320,
+        "height": 241,
+        "bytes": 12056
+      },
+      "sourceBytes": 263776
+    },
+    {
+      "no": 32,
+      "path": "artwork/032.webp",
+      "width": 772,
+      "height": 1024,
+      "bytes": 121004,
+      "thumb": {
+        "path": "artwork/032-thumb.webp",
+        "width": 241,
+        "height": 320,
+        "bytes": 9558
+      },
+      "sourceBytes": 209120
+    },
+    {
+      "no": 33,
+      "path": "artwork/033.webp",
+      "width": 1024,
+      "height": 772,
+      "bytes": 148230,
+      "thumb": {
+        "path": "artwork/033-thumb.webp",
+        "width": 320,
+        "height": 241,
+        "bytes": 15546
+      },
+      "sourceBytes": 254918
+    },
+    {
+      "no": 35,
+      "path": "artwork/035.webp",
+      "width": 768,
+      "height": 1024,
+      "bytes": 68826,
+      "thumb": {
+        "path": "artwork/035-thumb.webp",
+        "width": 240,
+        "height": 320,
+        "bytes": 4986
+      },
+      "sourceBytes": 128077
+    },
+    {
+      "no": 37,
+      "path": "artwork/037.webp",
+      "width": 748,
+      "height": 1024,
+      "bytes": 323164,
+      "thumb": {
+        "path": "artwork/037-thumb.webp",
+        "width": 234,
+        "height": 320,
+        "bytes": 21430
+      },
+      "sourceBytes": 433662
+    },
+    {
+      "no": 38,
+      "path": "artwork/038.webp",
+      "width": 1024,
+      "height": 768,
+      "bytes": 171590,
+      "thumb": {
+        "path": "artwork/038-thumb.webp",
+        "width": 320,
+        "height": 240,
+        "bytes": 12410
+      },
+      "sourceBytes": 269153
+    },
+    {
+      "no": 39,
+      "path": "artwork/039.webp",
+      "width": 1024,
+      "height": 775,
+      "bytes": 191540,
+      "thumb": {
+        "path": "artwork/039-thumb.webp",
+        "width": 320,
+        "height": 242,
+        "bytes": 16068
+      },
+      "sourceBytes": 290180
+    },
+    {
+      "no": 50,
+      "path": "artwork/050.webp",
+      "width": 1024,
+      "height": 682,
+      "bytes": 308714,
+      "thumb": {
+        "path": "artwork/050-thumb.webp",
+        "width": 320,
+        "height": 213,
+        "bytes": 17680
+      },
+      "sourceBytes": 390148
+    },
+    {
+      "no": 61,
+      "path": "artwork/061.webp",
+      "width": 1024,
+      "height": 764,
+      "bytes": 157760,
+      "thumb": {
+        "path": "artwork/061-thumb.webp",
+        "width": 320,
+        "height": 239,
+        "bytes": 16056
+      },
+      "sourceBytes": 247354
+    },
+    {
+      "no": 63,
+      "path": "artwork/063.webp",
+      "width": 1024,
+      "height": 775,
+      "bytes": 237248,
+      "thumb": {
+        "path": "artwork/063-thumb.webp",
+        "width": 320,
+        "height": 242,
+        "bytes": 21032
+      },
+      "sourceBytes": 352485
+    },
+    {
+      "no": 69,
+      "path": "artwork/069.webp",
+      "width": 1024,
+      "height": 848,
+      "bytes": 76146,
+      "thumb": {
+        "path": "artwork/069-thumb.webp",
+        "width": 320,
+        "height": 265,
+        "bytes": 9478
+      },
+      "sourceBytes": 142985
+    },
+    {
+      "no": 70,
+      "path": "artwork/070.webp",
+      "width": 1024,
+      "height": 761,
+      "bytes": 241460,
+      "thumb": {
+        "path": "artwork/070-thumb.webp",
+        "width": 320,
+        "height": 238,
+        "bytes": 19430
+      },
+      "sourceBytes": 346790
+    },
+    {
+      "no": 71,
+      "path": "artwork/071.webp",
+      "width": 758,
+      "height": 1024,
+      "bytes": 119468,
+      "thumb": {
+        "path": "artwork/071-thumb.webp",
+        "width": 237,
+        "height": 320,
+        "bytes": 9068
+      },
+      "sourceBytes": 207705
+    },
+    {
+      "no": 73,
+      "path": "artwork/073.webp",
+      "width": 1024,
+      "height": 775,
+      "bytes": 133696,
+      "thumb": {
+        "path": "artwork/073-thumb.webp",
+        "width": 320,
+        "height": 242,
+        "bytes": 9546
+      },
+      "sourceBytes": 219872
+    },
+    {
+      "no": 74,
+      "path": "artwork/074.webp",
+      "width": 1024,
+      "height": 1024,
+      "bytes": 132910,
+      "thumb": {
+        "path": "artwork/074-thumb.webp",
+        "width": 320,
+        "height": 320,
+        "bytes": 10890
+      },
+      "sourceBytes": 234566
+    },
+    {
+      "no": 77,
+      "path": "artwork/077.webp",
+      "width": 1024,
+      "height": 780,
+      "bytes": 111790,
+      "thumb": {
+        "path": "artwork/077-thumb.webp",
+        "width": 320,
+        "height": 244,
+        "bytes": 10738
+      },
+      "sourceBytes": 200376
+    },
+    {
+      "no": 82,
+      "path": "artwork/082.webp",
+      "width": 1024,
+      "height": 578,
+      "bytes": 117478,
+      "thumb": {
+        "path": "artwork/082-thumb.webp",
+        "width": 320,
+        "height": 181,
+        "bytes": 7780
+      },
+      "sourceBytes": 184908
+    },
+    {
+      "no": 83,
+      "path": "artwork/083.webp",
+      "width": 751,
+      "height": 1024,
+      "bytes": 268734,
+      "thumb": {
+        "path": "artwork/083-thumb.webp",
+        "width": 234,
+        "height": 320,
+        "bytes": 18920
+      },
+      "sourceBytes": 358849
+    },
+    {
+      "no": 84,
+      "path": "artwork/084.webp",
+      "width": 682,
+      "height": 1024,
+      "bytes": 235068,
+      "thumb": {
+        "path": "artwork/084-thumb.webp",
+        "width": 213,
+        "height": 320,
+        "bytes": 14700
+      },
+      "sourceBytes": 307286
+    },
+    {
+      "no": 85,
+      "path": "artwork/085.webp",
+      "width": 682,
+      "height": 1024,
+      "bytes": 180252,
+      "thumb": {
+        "path": "artwork/085-thumb.webp",
+        "width": 213,
+        "height": 320,
+        "bytes": 8794
+      },
+      "sourceBytes": 255590
+    },
+    {
+      "no": 86,
+      "path": "artwork/086.webp",
+      "width": 772,
+      "height": 1024,
+      "bytes": 230580,
+      "thumb": {
+        "path": "artwork/086-thumb.webp",
+        "width": 241,
+        "height": 320,
+        "bytes": 21114
+      },
+      "sourceBytes": 341173
+    },
+    {
+      "no": 87,
+      "path": "artwork/087.webp",
+      "width": 682,
+      "height": 1024,
+      "bytes": 71510,
+      "thumb": {
+        "path": "artwork/087-thumb.webp",
+        "width": 213,
+        "height": 320,
+        "bytes": 3594
+      },
+      "sourceBytes": 147994
+    },
+    {
+      "no": 88,
+      "path": "artwork/088.webp",
+      "width": 772,
+      "height": 1024,
+      "bytes": 114194,
+      "thumb": {
+        "path": "artwork/088-thumb.webp",
+        "width": 241,
+        "height": 320,
+        "bytes": 11028
+      },
+      "sourceBytes": 200695
+    },
+    {
+      "no": 89,
+      "path": "artwork/089.webp",
+      "width": 1024,
+      "height": 559,
+      "bytes": 195198,
+      "thumb": {
+        "path": "artwork/089-thumb.webp",
+        "width": 320,
+        "height": 174,
+        "bytes": 16750
+      },
+      "sourceBytes": 274570
+    },
+    {
+      "no": 90,
+      "path": "artwork/090.webp",
+      "width": 682,
+      "height": 1024,
+      "bytes": 267148,
+      "thumb": {
+        "path": "artwork/090-thumb.webp",
+        "width": 213,
+        "height": 320,
+        "bytes": 7748
+      },
+      "sourceBytes": 326450
+    },
+    {
+      "no": 91,
+      "path": "artwork/091.webp",
+      "width": 772,
+      "height": 1024,
+      "bytes": 185348,
+      "thumb": {
+        "path": "artwork/091-thumb.webp",
+        "width": 241,
+        "height": 320,
+        "bytes": 14984
+      },
+      "sourceBytes": 283604
+    },
+    {
+      "no": 93,
+      "path": "artwork/093.webp",
+      "width": 772,
+      "height": 1024,
+      "bytes": 247626,
+      "thumb": {
+        "path": "artwork/093-thumb.webp",
+        "width": 241,
+        "height": 320,
+        "bytes": 25512
+      },
+      "sourceBytes": 364584
+    },
+    {
+      "no": 94,
+      "path": "artwork/094.webp",
+      "width": 772,
+      "height": 1024,
+      "bytes": 150012,
+      "thumb": {
+        "path": "artwork/094-thumb.webp",
+        "width": 241,
+        "height": 320,
+        "bytes": 15392
+      },
+      "sourceBytes": 246461
+    },
+    {
+      "no": 95,
+      "path": "artwork/095.webp",
+      "width": 682,
+      "height": 1024,
+      "bytes": 147864,
+      "thumb": {
+        "path": "artwork/095-thumb.webp",
+        "width": 213,
+        "height": 320,
+        "bytes": 12968
+      },
+      "sourceBytes": 239519
+    },
+    {
+      "no": 96,
+      "path": "artwork/096.webp",
+      "width": 747,
+      "height": 1024,
+      "bytes": 152300,
+      "thumb": {
+        "path": "artwork/096-thumb.webp",
+        "width": 233,
+        "height": 320,
+        "bytes": 12442
+      },
+      "sourceBytes": 240911
+    },
+    {
+      "no": 97,
+      "path": "artwork/097.webp",
+      "width": 1024,
+      "height": 767,
+      "bytes": 148440,
+      "thumb": {
+        "path": "artwork/097-thumb.webp",
+        "width": 320,
+        "height": 239,
+        "bytes": 12772
+      },
+      "sourceBytes": 228041
+    },
+    {
+      "no": 98,
+      "path": "artwork/098.webp",
+      "width": 1024,
+      "height": 767,
+      "bytes": 274778,
+      "thumb": {
+        "path": "artwork/098-thumb.webp",
+        "width": 320,
+        "height": 239,
+        "bytes": 21108
+      },
+      "sourceBytes": 367719
+    },
+    {
+      "no": 99,
+      "path": "artwork/099.webp",
+      "width": 1024,
+      "height": 768,
+      "bytes": 257406,
+      "thumb": {
+        "path": "artwork/099-thumb.webp",
+        "width": 320,
+        "height": 240,
+        "bytes": 17286
+      },
+      "sourceBytes": 340440
+    },
+    {
+      "no": 100,
+      "path": "artwork/100.webp",
+      "width": 1024,
+      "height": 772,
+      "bytes": 190902,
+      "thumb": {
+        "path": "artwork/100-thumb.webp",
+        "width": 320,
+        "height": 241,
+        "bytes": 16092
+      },
+      "sourceBytes": 282423
+    },
+    {
+      "no": 101,
+      "path": "artwork/101.webp",
+      "width": 1024,
+      "height": 819,
+      "bytes": 77878,
+      "thumb": {
+        "path": "artwork/101-thumb.webp",
+        "width": 320,
+        "height": 256,
+        "bytes": 7026
+      },
+      "sourceBytes": 148281
+    }
+  ]
+}
