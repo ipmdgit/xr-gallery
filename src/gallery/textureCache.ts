@@ -196,6 +196,7 @@ function tick() {
     let inView = false
     if (mesh) {
       if (!mesh.geometry.boundingSphere) mesh.geometry.computeBoundingSphere()
+      mesh.updateWorldMatrix(true, false)
       sphere.copy(mesh.geometry.boundingSphere!).applyMatrix4(mesh.matrixWorld)
       inView = frustum.intersectsSphere(sphere)
       if (inView || wideFrustum.intersectsSphere(sphere)) {
